@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Piano Concimazione e Protezione ICL - Gestione agronomica, nutrizione e fitofarmaci per il tappeto erboso.">
-    <title>Piano Concimazione & Protezione ICL - Mobile Optimized</title>
+    <title>Piano Concimazione & Protezione ICL - Multi-Zona</title>
     
     <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -347,6 +347,13 @@
             .card-custom {
                 box-shadow: none;
                 border: 1px solid #ddd;
+                width: 100% !important;
+                max-width: 100% !important;
+                overflow: hidden;
+            }
+            canvas {
+                max-width: 100% !important;
+                height: auto !important;
             }
         }
     </style>
@@ -361,9 +368,25 @@
                     <h1 class="fw-bold mb-1 d-flex align-items-center gap-2">
                         <span>Piano Concimazione & Protezione ICL</span>
                     </h1>
-                    <p class="mb-0 text-white-50 small"><i class="fa-solid fa-sliders me-1" aria-hidden="true"></i> Gestione Agronomica, Nutrizione & Fitofarmaci</p>
+                    <p class="mb-0 text-white-50 small"><i class="fa-solid fa-sliders me-1" aria-hidden="true"></i> Gestione Multi-Appezzamento, Nutrizione & Fitofarmaci</p>
                 </div>
                 <div class="text-end d-flex align-items-center gap-1 flex-wrap">
+                    <!-- Selettore Zona / Appezzamento con pulsante di rinomina -->
+                    <div class="d-flex align-items-center gap-1 me-1">
+                        <label for="selectZone" class="text-white small fw-bold d-none d-sm-inline" style="font-size: 0.75rem;">Zona:</label>
+                        <select id="selectZone" class="form-select form-select-sm select-season bg-light text-dark" onchange="switchZone(this.value)" title="Seleziona Zona">
+                        </select>
+                        <button class="btn btn-light btn-sm rounded-pill px-2 text-dark shadow-sm" onclick="renameActiveZone()" title="Rinomina Zona Attiva">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button class="btn btn-light btn-sm rounded-pill px-2 text-dark shadow-sm" onclick="addNewZone()" title="Aggiungi Nuova Zona">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm rounded-pill px-2 shadow-sm text-white border-white" onclick="deleteActiveZone()" title="Elimina Zona Attiva">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+
                     <button class="btn btn-warning btn-sm rounded-pill fw-bold text-dark px-2 shadow-sm no-print" onclick="saveUserData()" title="Salva Dati">
                         <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> <span class="d-none d-sm-inline">Salva</span>
                     </button>
@@ -606,7 +629,7 @@
                         <div class="d-flex align-items-center">
                             <i class="fa-solid fa-circle-info fs-5 text-success me-2" aria-hidden="true"></i>
                             <div>
-                                <p class="small text-muted mb-0">Gestisci fertilizzanti, fitofarmaci e pratiche manutentive (es. carotature con descrizione libera) in un'unica tabella integrata.</p>
+                                <p class="small text-muted mb-0">Gestisci fertilizzanti, fitofarmaci e pratiche manutentive (es. carotature con descrizione libera) per ciascun appezzamento selezionato.</p>
                             </div>
                         </div>
                     </div>
@@ -1501,6 +1524,138 @@
     <!-- Scripts Bootstrap e Logica JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
     <script>
+        // Gestione Multi-Appezzamento (Multi-Zona) State
+        let appState = {
+            currentZoneId: 1,
+            zones: [
+                {
+                    id: 1,
+                    name: "Green Principale",
+                    area: 5000,
+                    turfType: "c3",
+                    season: "summer",
+                    fertRows: [
+                        { period: "Mar - S1", family: "ProTurf", product: "High N", dose: 30, unit: "conf", cost: 42 }
+                    ],
+                    quadernoRows: [
+                        { date: "2026-03-02", operation: "Fungicida Instrata", operator: "Mario Rossi", notes: "Ottime condizioni" }
+                    ],
+                    geoMarkers: []
+                },
+                {
+                    id: 2,
+                    name: "Fairway Buca 1",
+                    area: 12000,
+                    turfType: "c4",
+                    season: "summer",
+                    fertRows: [],
+                    quadernoRows: [],
+                    geoMarkers: []
+                }
+            ]
+        };
+
+        // Caricamento eventuale stato salvato in precedenza
+        let savedAppState = localStorage.getItem('icl_multizone_app_state');
+        if (savedAppState) {
+            try {
+                let parsed = JSON.parse(savedAppState);
+                if (parsed && parsed.zones && parsed.zones.length > 0) {
+                    appState = parsed;
+                }
+            } catch(e) {}
+        }
+
+        function getActiveZone() {
+            let zone = appState.zones.find(z => z.id === appState.currentZoneId);
+            if (!zone) {
+                appState.currentZoneId = appState.zones[0].id;
+                zone = appState.zones[0];
+            }
+            return zone;
+        }
+
+        function syncInputsToActiveZone() {
+            let zone = getActiveZone();
+            if (!zone) return;
+            zone.area = parseFloat(document.getElementById("infoSuperficie").value) || 5000;
+            zone.turfType = document.getElementById("turfType").value;
+            zone.season = document.getElementById("seasonSelect").value;
+            zone.fertRows = fertRows;
+            zone.quadernoRows = quadernoRows;
+            zone.geoMarkers = geoMarkers;
+        }
+
+        function renderZoneSelector() {
+            let select = document.getElementById("selectZone");
+            if (!select) return;
+            select.innerHTML = appState.zones.map(z => `<option value="${z.id}" ${z.id === appState.currentZoneId ? 'selected' : ''}>${z.name} (${z.area} mq)</option>`).join('');
+        }
+
+        function switchZone(zoneId) {
+            syncInputsToActiveZone();
+            appState.currentZoneId = parseInt(zoneId);
+            let zone = getActiveZone();
+
+            document.getElementById("infoSuperficie").value = zone.area;
+            document.getElementById("turfType").value = zone.turfType || "c3";
+            document.getElementById("seasonSelect").value = zone.season || "summer";
+
+            fertRows = zone.fertRows || [];
+            quadernoRows = zone.quadernoRows || [];
+            geoMarkers = zone.geoMarkers || [];
+
+            renderZoneSelector();
+            renderFertTable();
+            updateTimelineVisuals();
+            renderQuadernoTable();
+            renderGeoMarkersToMapAndTable();
+            runAllCalculations();
+        }
+
+        function addNewZone() {
+            let name = prompt("Inserisci il nome del nuovo appezzamento / zona:", "Fairway Buca 2");
+            if (!name) return;
+            syncInputsToActiveZone();
+            let newId = Date.now();
+            appState.zones.push({
+                id: newId,
+                name: name,
+                area: 4000,
+                turfType: "c3",
+                season: "summer",
+                fertRows: [],
+                quadernoRows: [],
+                geoMarkers: []
+            });
+            switchZone(newId);
+            saveUserData();
+        }
+
+        function renameActiveZone() {
+            let zone = getActiveZone();
+            if (!zone) return;
+            let newName = prompt("Inserisci il nuovo nome per questa zona / appezzamento:", zone.name);
+            if (newName && newName.trim() !== "") {
+                zone.name = newName.trim();
+                renderZoneSelector();
+                saveUserData();
+            }
+        }
+
+        function deleteActiveZone() {
+            if (appState.zones.length <= 1) {
+                alert("Non puoi eliminare l'unica zona rimasta. Puoi però rinominarla usando il pulsante con la matita.");
+                return;
+            }
+            if (confirm("Vuoi davvero eliminare questa zona e tutti i dati e trattamenti associati?")) {
+                appState.zones = appState.zones.filter(z => z.id !== appState.currentZoneId);
+                appState.currentZoneId = appState.zones[0].id;
+                switchZone(appState.currentZoneId);
+                saveUserData();
+            }
+        }
+
         let currentLat = 45.2415;
         let currentLng = 11.2351;
 
@@ -1600,23 +1755,8 @@
         const masterProductCatalog = [...productCatalog, ...pesticideCatalog, ...agronomicCatalog];
 
         let fertRows = [];
-
         let quadernoRows = [];
-        let savedQuaderno = localStorage.getItem('icl_quaderno_rows');
-        if (savedQuaderno) {
-            try { quadernoRows = JSON.parse(savedQuaderno); } catch(e) { quadernoRows = []; }
-        }
-        if (quadernoRows.length === 0) {
-            quadernoRows = [
-                { date: "2026-03-02", operation: "Fungicida Instrata", operator: "Mario Rossi", notes: "Ottime condizioni, terreno umido" }
-            ];
-        }
-
         let geoMarkers = [];
-        let savedGeoMarkers = localStorage.getItem('icl_geo_markers');
-        if (savedGeoMarkers) {
-            try { geoMarkers = JSON.parse(savedGeoMarkers); } catch(e) { geoMarkers = []; }
-        }
 
         let mapObj = null;
         let mapMarkersLayer = null;
@@ -1630,6 +1770,17 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("startDateGdd").value = new Date().getFullYear() + "-03-01";
+            
+            // Carica la zona attiva iniziale
+            let zone = getActiveZone();
+            document.getElementById("infoSuperficie").value = zone.area;
+            document.getElementById("turfType").value = zone.turfType || "c3";
+            document.getElementById("seasonSelect").value = zone.season || "summer";
+            fertRows = zone.fertRows || [];
+            quadernoRows = zone.quadernoRows || [];
+            geoMarkers = zone.geoMarkers || [];
+
+            renderZoneSelector();
             initTimelineMatrix();
             renderFertTable();
             renderProductsTable();
@@ -1640,7 +1791,6 @@
             renderAlerts();
             
             fetchWeatherData(); 
-            
             initFieldMap();
         });
 
@@ -1975,7 +2125,7 @@
         }
 
         function resetAllCosts() {
-            if (confirm("Vuoi davvero azzerare tutti i costi e svuotare la tabella?")) {
+            if (confirm("Vuoi davvero azzerare tutti i costi e svuotare la tabella di questa zona?")) {
                 fertRows = [];
                 renderFertTable();
                 updateTimelineVisuals();
@@ -1988,7 +2138,9 @@
         }
 
         function saveUserData() {
-            alert("Dati del piano e impostazioni salvati con successo!");
+            syncInputsToActiveZone();
+            localStorage.setItem('icl_multizone_app_state', JSON.stringify(appState));
+            alert("Tutte le zone e i piani agronomici sono stati salvati con successo!");
         }
 
         async function fetchWeatherData() {
@@ -2555,7 +2707,7 @@
                 `;
                 tbody.appendChild(tr);
             });
-            localStorage.setItem('icl_quaderno_rows', JSON.stringify(quadernoRows));
+            syncInputsToActiveZone();
         }
 
         function addQuadernoRow() {
@@ -2566,7 +2718,7 @@
 
         function updateQuaderno(idx, field, val) {
             quadernoRows[idx][field] = val;
-            localStorage.setItem('icl_quaderno_rows', JSON.stringify(quadernoRows));
+            syncInputsToActiveZone();
         }
 
         function removeQuadernoRow(idx) {
@@ -2636,7 +2788,7 @@
             }
 
             geoMarkers.push({ date: today, probType, severity, lat, lng, notes });
-            localStorage.setItem('icl_geo_markers', JSON.stringify(geoMarkers));
+            syncInputsToActiveZone();
 
             renderGeoMarkersToMapAndTable();
             document.getElementById("mapNotes").value = "";
@@ -2652,7 +2804,7 @@
             tbody.innerHTML = "";
 
             if (geoMarkers.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">Nessuna segnalazione inserita.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">Nessuna segnalazione inserita per questa zona.</td></tr>`;
                 return;
             }
 
@@ -2694,7 +2846,7 @@
 
         function removeGeoMarker(idx) {
             geoMarkers.splice(idx, 1);
-            localStorage.setItem('icl_geo_markers', JSON.stringify(geoMarkers));
+            syncInputsToActiveZone();
             renderGeoMarkersToMapAndTable();
         }
 
@@ -2703,7 +2855,7 @@
             if (!container) return;
             container.innerHTML = "";
             if (fertRows.length === 0) {
-                container.innerHTML = `<div class="list-group-item text-muted small">Nessun trattamento pianificato al momento.</div>`;
+                container.innerHTML = `<div class="list-group-item text-muted small">Nessun trattamento pianificato per questa zona.</div>`;
                 return;
             }
             fertRows.forEach(r => {
@@ -2721,11 +2873,11 @@
         }
 
         function exportDataJson() {
-            let dataObj = { fertRows, quadernoRows, geoMarkers };
-            let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataObj, null, 2));
+            syncInputsToActiveZone();
+            let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
             let downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "piano_concimazione_icl.json");
+            downloadAnchor.setAttribute("download", "piano_concimazione_multizona_icl.json");
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
