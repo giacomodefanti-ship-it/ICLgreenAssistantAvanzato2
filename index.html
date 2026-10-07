@@ -1,0 +1,2862 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Piano Concimazione e Protezione ICL - Gestione agronomica, nutrizione e fitofarmaci per il tappeto erboso.">
+    <title>Piano Concimazione & Protezione ICL - Mobile Optimized</title>
+    
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6.4 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Leaflet CSS per la mappa interattiva -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <style>
+        :root {
+            --prussian-blue: #002846;
+            --persian-green: #00acad;
+            --riptide: #8fe6e5;
+            
+            --primary-green: var(--prussian-blue);
+            --accent-green: var(--persian-green);
+            --light-green: #d8f3dc;
+            --cream-bg: #f8f9fa;
+            --purple-custom: #6f42c1;
+            --warning-custom: #d97706;
+            --microdochium-color: #0284c7;
+            --brownpatch-color: #b45309;
+            
+            --py-primary: #008542;
+            --py-primary-dark: #006833;
+            --py-secondary: #1a2530;
+            --py-light-bg: #f8fafc;
+            --py-card-bg: #ffffff;
+            --py-danger: #ef4444;
+            --py-danger-bg: #fef2f2;
+            --py-warning: #f59e0b;
+            --py-warning-bg: #fffbeb;
+            --py-success: #10b981;
+            --py-success-bg: #ecfdf5;
+            --py-text: #1e293b;
+            --py-text-light: #64748b;
+            --py-border: #e2e8f0;
+            --py-shadow-sm: 0 2px 8px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);
+            --py-shadow-md: 0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+            --py-radius: 16px;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+            color: var(--py-text);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container-fluid, .container {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .header-banner {
+            background: linear-gradient(135deg, #001524 0%, var(--prussian-blue) 50%, var(--persian-green) 100%);
+            color: white;
+            padding: 1.5rem 1rem;
+            border-radius: 0 0 20px 20px;
+            box-shadow: var(--py-shadow-md);
+            border-bottom: 4px solid var(--riptide);
+            margin-bottom: 1.25rem !important;
+        }
+
+        .header-banner h1 {
+            font-size: 1.35rem;
+        }
+
+        /* NAV TABS MODERNIZZATE E SCROLLABILI */
+        .nav-tabs-container {
+            position: relative;
+            margin-bottom: 1rem !important;
+        }
+
+        .nav-tabs {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 6px;
+            border-bottom: none;
+            padding-bottom: 6px;
+            scrollbar-width: thin;
+        }
+
+        .nav-tabs::-webkit-scrollbar {
+            height: 4px;
+        }
+        .nav-tabs::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .nav-tabs .nav-item {
+            flex: 0 0 auto;
+        }
+
+        .nav-tabs .nav-link {
+            font-weight: 600;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            padding: 0.5rem 0.9rem;
+            font-size: 0.82rem;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+
+        /* Colori per sezione soft */
+        #fert-tab { color: #006833; background-color: #f0fdf4; border-color: #bbf7d0; }
+        #irrigation-tab { color: #0284c7; background-color: #f0f9ff; border-color: #bae6fd; }
+        #gdd-tab { color: #d97706; background-color: #fffbeb; border-color: #fde68a; }
+        #herbicide-tab { color: #dc2626; background-color: #fef2f2; border-color: #fecaca; }
+        #coring-tab { color: #78350f; background-color: #fdf8f6; border-color: #fed7aa; }
+        #ds-tab { color: #b45309; background-color: #fff7ed; border-color: #ffedd5; }
+        #microdochium-tab { color: #0369a1; background-color: #e0f2fe; border-color: #7dd3fc; }
+        #brownpatch-tab { color: #9a3412; background-color: #ffedd5; border-color: #fed7aa; }
+        #pyricularia-tab { color: #15803d; background-color: #dcfce7; border-color: #86efac; }
+        #pesticide-tab { color: #b91c1c; background-color: #fee2e2; border-color: #fca5a5; }
+        #legenda-tab { color: #4338ca; background-color: #eef2ff; border-color: #c7d2fe; }
+        #gp-tab { color: #047857; background-color: #ecfdf5; border-color: #a7f3d0; }
+        #quaderno-tab { color: #5b21b6; background-color: #f5f3ff; border-color: #ddd6fe; }
+        #geo-map-tab { color: #1d4ed8; background-color: #eff6ff; border-color: #bfdbfe; }
+        #export-tab { color: #334155; background-color: #f1f5f9; border-color: #cbd5e1; }
+        #alerts-tab { color: #b45309; background-color: #fef3c7; border-color: #fde68a; }
+
+        /* Stati attivi schede */
+        .nav-tabs .nav-link.active {
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-1px);
+        }
+        #fert-tab.active { background-color: #006833 !important; border-color: #006833 !important; }
+        #irrigation-tab.active { background-color: #0284c7 !important; border-color: #0284c7 !important; }
+        #gdd-tab.active { background-color: #d97706 !important; border-color: #d97706 !important; }
+        #herbicide-tab.active { background-color: #dc2626 !important; border-color: #dc2626 !important; }
+        #coring-tab.active { background-color: #78350f !important; border-color: #78350f !important; }
+        #ds-tab.active { background-color: #b45309 !important; border-color: #b45309 !important; }
+        #microdochium-tab.active { background-color: #0369a1 !important; border-color: #0369a1 !important; }
+        #brownpatch-tab.active { background-color: #9a3412 !important; border-color: #9a3412 !important; }
+        #pyricularia-tab.active { background-color: #15803d !important; border-color: #15803d !important; }
+        #pesticide-tab.active { background-color: #b91c1c !important; border-color: #b91c1c !important; }
+        #legenda-tab.active { background-color: #4338ca !important; border-color: #4338ca !important; }
+        #gp-tab.active { background-color: #047857 !important; border-color: #047857 !important; }
+        #quaderno-tab.active { background-color: #5b21b6 !important; border-color: #5b21b6 !important; }
+        #geo-map-tab.active { background-color: #1d4ed8 !important; border-color: #1d4ed8 !important; }
+        #export-tab.active { background-color: #334155 !important; border-color: #334155 !important; }
+        #alerts-tab.active { background-color: #b45309 !important; border-color: #b45309 !important; }
+
+        /* Card con design pulito, bordi smussati e ombre levigate */
+        .card-custom {
+            border: none;
+            border-radius: var(--py-radius);
+            box-shadow: var(--py-shadow-sm);
+            background: var(--py-card-bg);
+            margin-bottom: 1.25rem;
+            padding: 1.25rem !important;
+            transition: box-shadow 0.2s ease;
+        }
+        .card-custom:hover {
+            box-shadow: var(--py-shadow-md);
+        }
+
+        @media (max-width: 768px) {
+            .card-custom {
+                padding: 0.85rem !important;
+            }
+            .header-banner {
+                padding: 1.2rem 0.75rem;
+            }
+            .btn-sm {
+                padding: 0.35rem 0.7rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        .table-custom {
+            vertical-align: middle;
+            font-size: 0.82rem;
+        }
+
+        .table-custom th {
+            background-color: var(--primary-green);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            border: none;
+        }
+
+        .btn-green {
+            background-color: var(--accent-green);
+            color: white;
+            border-radius: 10px;
+            font-weight: 500;
+            padding: 0.5rem 1.2rem;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-green:hover {
+            background-color: var(--prussian-blue);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .summary-box {
+            background: #f8fafc;
+            border-left: 5px solid var(--accent-green);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+        }
+
+        .summary-box-warning {
+            border-left-color: var(--warning-custom) !important;
+        }
+
+        .summary-box-info {
+            border-left-color: var(--microdochium-color) !important;
+        }
+
+        .summary-box-brownpatch {
+            border-left: 4px solid var(--brownpatch-color);
+            background-color: #fdf8f6;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .input-area-custom {
+            font-weight: 600;
+            border-radius: 8px;
+        }
+
+        .select-season {
+            border-radius: 50rem;
+            font-weight: 600;
+            padding: 0.3rem 0.8rem;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            cursor: pointer;
+        }
+
+        .text-purple {
+            color: var(--purple-custom);
+        }
+
+        .border-purple {
+            border-left-color: var(--purple-custom) !important;
+        }
+
+        .timeline-matrix-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-timeline th, .table-timeline td {
+            text-align: center;
+            font-size: 0.7rem;
+            padding: 4px 2px;
+            min-width: 22px;
+        }
+
+        .table-timeline th.month-header {
+            background-color: var(--prussian-blue);
+            color: white;
+            border-right: 1px solid #dee2e6;
+            font-size: 0.75rem;
+        }
+
+        .table-timeline th.week-header {
+            background-color: #e2e8f0;
+            color: #333;
+            font-size: 0.65rem;
+            border-right: 1px solid #cbd5e1;
+        }
+
+        .timeline-cell {
+            height: 36px;
+            vertical-align: middle !important;
+            border-right: 1px solid #e2e8f0;
+            transition: background-color 0.2s;
+        }
+
+        .timeline-cell.drag-over {
+            background-color: #d1fae5 !important;
+            border: 2px dashed #10b981;
+        }
+
+        .timeline-badge {
+            display: inline-block;
+            padding: 2px 4px;
+            font-size: 0.62rem;
+            font-weight: 600;
+            border-radius: 4px;
+            color: white;
+            white-space: nowrap;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            cursor: grab;
+        }
+        .timeline-badge:active {
+            cursor: grabbing;
+        }
+
+        #fieldMap {
+            height: 380px;
+            width: 100%;
+            border-radius: var(--py-radius);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            z-index: 1;
+        }
+
+        .bg-line-proturf { background-color: #0284c7; }
+        .bg-line-landscaper { background-color: #0d9488; }
+        .bg-line-sportsmaster { background-color: #4f46e5; }
+        .bg-line-gronamic { background-color: #16a34a; }
+        .bg-line-sierrablen-plus { background-color: #ffa500; }
+        .bg-line-fitofarmaci { background-color: #dc2626; }
+        .bg-line-manutenzione { background-color: #6f42c1; }
+        .bg-line-default { background-color: #64748b; }
+
+        @media print {
+            .header-banner, .nav-tabs-container, .btn, .no-print {
+                display: none !important;
+            }
+            body {
+                background: white;
+            }
+            .card-custom {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Banner -->
+    <header class="header-banner position-relative">
+        <div class="container-fluid px-2">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                    <h1 class="fw-bold mb-1 d-flex align-items-center gap-2">
+                        <span>Piano Concimazione & Protezione ICL</span>
+                    </h1>
+                    <p class="mb-0 text-white-50 small"><i class="fa-solid fa-sliders me-1" aria-hidden="true"></i> Gestione Agronomica, Nutrizione & Fitofarmaci</p>
+                </div>
+                <div class="text-end d-flex align-items-center gap-1 flex-wrap">
+                    <button class="btn btn-warning btn-sm rounded-pill fw-bold text-dark px-2 shadow-sm no-print" onclick="saveUserData()" title="Salva Dati">
+                        <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> <span class="d-none d-sm-inline">Salva</span>
+                    </button>
+                    <button class="btn btn-outline-light btn-sm rounded-pill fw-bold px-2 shadow-sm no-print" onclick="resetOnlyProductCosts()" title="Azzera Costi Prodotti">
+                        <i class="fa-solid fa-rotate-left" aria-hidden="true"></i> <span class="d-none d-sm-inline">Azzera Costi</span>
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-2 shadow-sm no-print" onclick="resetAllCosts()" title="Azzera Piano">
+                        <i class="fa-solid fa-eraser" aria-hidden="true"></i> <span class="d-none d-sm-inline">Azzera Tutto</span>
+                    </button>
+                    <button class="btn btn-light btn-sm rounded-pill fw-bold text-dark px-2 shadow-sm no-print" onclick="window.print()" title="Stampa">
+                        <i class="fa-solid fa-print" aria-hidden="true"></i>
+                    </button>
+                    <div class="d-flex align-items-center ms-1">
+                        <label for="selectAnno" class="visually-hidden">Seleziona Anno</label>
+                        <select id="selectAnno" class="form-select form-select-sm select-season bg-light text-dark" onchange="updateSeasonTitle(this.value)">
+                            <option value="2026" selected>2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                            <option value="2029">2029</option>
+                            <option value="2030">2030</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container-fluid px-2">
+
+        <!-- General Info Header Cards -->
+        <section aria-label="Informazioni generali impianto" class="row g-2 mb-3">
+            <div class="col-6 col-md-3">
+                <div class="card card-custom p-2 border-start border-4 border-danger h-100 mb-0">
+                    <label for="infoCliente" class="text-muted small fw-bold text-uppercase" style="font-size: 0.68rem;">Cliente / Impianto</label>
+                    <div class="mt-1">
+                        <input type="text" id="infoCliente" class="form-control form-control-sm input-area-custom" value="" placeholder="Nome cliente...">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="card card-custom p-2 border-start border-4 border-success h-100 mb-0">
+                    <label for="infoArea" class="text-muted small fw-bold text-uppercase" style="font-size: 0.68rem;">Area Interessata</label>
+                    <div class="mt-1">
+                        <input type="text" id="infoArea" class="form-control form-control-sm input-area-custom" value="" placeholder="Es. Green">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="card card-custom p-2 border-start border-4 border-primary h-100 mb-0">
+                    <label for="infoSuperficie" class="text-muted small fw-bold text-uppercase" style="font-size: 0.68rem;">Superficie (mq)</label>
+                    <div class="d-flex align-items-center mt-1">
+                        <input type="number" id="infoSuperficie" class="form-control form-control-sm input-area-custom me-1" value="5000" min="1" oninput="updateTotalArea(this.value)">
+                        <span class="fw-bold text-dark small">mq</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="card card-custom p-2 border-start border-4 border-warning h-100 mb-0">
+                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.68rem;">Apporto N/P/K</div>
+                    <div class="small fw-bold text-dark mt-1" style="font-size: 0.75rem;">
+                        N: <span id="totalN" class="text-success">0</span> | P: <span id="totalP" class="text-primary">0</span> | K: <span id="totalK" class="text-info">0</span> kg/ha
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="card card-custom p-2 border-start border-4 border-purple h-100 mb-0">
+                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.68rem;">Costi Gestione (€)</div>
+                    <div class="small fw-bold text-purple mt-1" style="font-size: 0.8rem;">
+                        Tot: <span id="totalCostHeader">€ 0.00</span> | Al mq: <span id="costPerSqM">€ 0.00</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Tabs (Scrollabili orizzontalmente con estetica moderna) -->
+        <div class="nav-tabs-container no-print">
+            <ul class="nav nav-tabs" id="planTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="fert-tab" data-bs-toggle="tab" data-bs-target="#fert-pane" type="button" role="tab" aria-selected="true"><i class="fa-solid fa-list-check me-1" aria-hidden="true"></i>Piano & Preventivo</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="irrigation-tab" data-bs-toggle="tab" data-bs-target="#irrigation-pane" type="button" role="tab" aria-selected="false"><i class="fa-solid fa-droplet me-1" aria-hidden="true"></i>Irrigazione</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="gdd-tab" data-bs-toggle="tab" data-bs-target="#gdd-pane" type="button" role="tab" aria-selected="false"><i class="fa-solid fa-temperature-arrow-up me-1" aria-hidden="true"></i>GDD & Primo Maxx II</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="herbicide-tab" data-bs-toggle="tab" data-bs-target="#herbicide-pane" type="button" role="tab" aria-selected="false"><i class="fa-solid fa-shield-halved me-1" aria-hidden="true"></i>Antigerminello</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="coring-tab" data-bs-toggle="tab" data-bs-target="#coring-pane" type="button" role="tab" aria-selected="false"><i class="fa-solid fa-layer-group me-1" aria-hidden="true"></i>Calcolo Sabbia</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="ds-tab" data-bs-toggle="tab" data-bs-target="#ds-pane" type="button" role="tab" aria-selected="false"><i class="fa-solid fa-chart-line me-1" aria-hidden="true"></i>Dollar Spot</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="microdochium-tab" data-bs-toggle="tab" data-bs-target="#microdochium-pane" type="button" role="tab" aria-selected="false"><i class="fa-solid fa-snowflake me-1" aria-hidden="true"></i>Microdochium</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="brownpatch-tab" data-bs-toggle="tab" data-bs-target="#brownpatch-pane" type="button" role="tab" aria-selected="false"><i class="fa-solid fa-sun me-1" aria-hidden="true"></i>Brown Patch</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pyricularia-tab" data-bs-toggle="tab" data-bs-target="#pyricularia-pane" type="button" role="tab" aria-selected="false"><i class="fa-solid fa-seedling me-1" aria-hidden="true"></i>Pyricularia (ITM)</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pesticide-tab" data-bs-toggle="tab" data-bs-target="#pesticide-pane" type="button" role="tab" aria-selected="false"><i class="fa-solid fa-shield-halved me-1" aria-hidden="true"></i>Fitofarmaci ICL</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="legenda-tab" data-bs-toggle="tab" data-bs-target="#legenda-pane" type="button" role="tab" aria-selected="false"><i class="fa-solid fa-book-open me-1" aria-hidden="true"></i>Catalogo & Legenda</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="gp-tab" data-bs-toggle="tab" data-bs-target="#gp-pane" type="button" role="tab" aria-selected="false"><i class="fa-solid fa-seedling me-1" aria-hidden="true"></i>Curva Crescita (GP)</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="quaderno-tab" data-bs-toggle="tab" data-bs-target="#quaderno-pane" type="button" role="tab" aria-selected="false"><i class="fa-solid fa-book me-1" aria-hidden="true"></i>Quaderno di Campagna</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="geo-map-tab" data-bs-toggle="tab" data-bs-target="#geo-map-pane" type="button" role="tab" aria-selected="false"><i class="fa-solid fa-map-location-dot me-1"></i>Mappa & Malattie</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="export-tab" data-bs-toggle="tab" data-bs-target="#export-pane" type="button" role="tab" aria-selected="false"><i class="fa-solid fa-file-arrow-down me-1" aria-hidden="true"></i>Esportazione Report</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="alerts-tab" data-bs-toggle="tab" data-bs-target="#alerts-pane" type="button" role="tab" aria-selected="false"><i class="fa-solid fa-bell me-1" aria-hidden="true"></i>Scadenze & Avvisi</button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="planTabsContent">
+            
+            <!-- FERTILIZATION & PROTECTION PLAN TAB -->
+            <div class="tab-pane fade show active" id="fert-pane" role="tabpanel" aria-labelledby="fert-tab">
+                
+                <!-- SEZIONE TIMELINE GRAFICA RAPIDA -->
+                <div class="card card-custom mb-3 border-start border-4 border-info">
+                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                        <div>
+                            <h2 class="h6 fw-bold text-dark mb-1"><i class="fa-solid fa-calendar-days me-1 text-info" aria-hidden="true"></i>Timeline Annuale Interventi</h2>
+                            <p class="small text-muted mb-0" style="font-size: 0.75rem;">Vista rapida trattamenti nell'arco dell'anno. (Trascina i badge per modificare il periodo)</p>
+                        </div>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <span class="badge bg-line-proturf" style="font-size: 0.6rem;">ProTurf</span>
+                            <span class="badge bg-line-landscaper" style="font-size: 0.6rem;">Landscaper</span>
+                            <span class="badge bg-line-sportsmaster" style="font-size: 0.6rem;">Sportsmaster</span>
+                            <span class="badge bg-line-gronamic" style="font-size: 0.6rem;">Gronamic</span>
+                            <span class="badge bg-line-sierrablen-plus" style="font-size: 0.6rem;">Sierrablen</span>
+                            <span class="badge bg-line-fitofarmaci" style="font-size: 0.6rem;">Fitofarmaci</span>
+                            <span class="badge bg-line-manutenzione" style="font-size: 0.6rem;">Manutenzione</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-matrix-container">
+                        <table class="table table-bordered table-timeline mb-0 bg-white" id="timelineMatrixTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="month-header" colspan="4">Gen</th>
+                                    <th scope="col" class="month-header" colspan="4">Feb</th>
+                                    <th scope="col" class="month-header" colspan="4">Mar</th>
+                                    <th scope="col" class="month-header" colspan="4">Apr</th>
+                                    <th scope="col" class="month-header" colspan="4">Mag</th>
+                                    <th scope="col" class="month-header" colspan="4">Giu</th>
+                                    <th scope="col" class="month-header" colspan="4">Lug</th>
+                                    <th scope="col" class="month-header" colspan="4">Ago</th>
+                                    <th scope="col" class="month-header" colspan="4">Set</th>
+                                    <th scope="col" class="month-header" colspan="4">Ott</th>
+                                    <th scope="col" class="month-header" colspan="4">Nov</th>
+                                    <th scope="col" class="month-header" colspan="4">Dic</th>
+                                </tr>
+                                <tr id="timelineWeeksRow"></tr>
+                            </thead>
+                            <tbody>
+                                <tr id="timelineCellsRow"></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABELLA DETTAGLIATA INTERVENTI -->
+                <div class="card card-custom">
+                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                        <h2 class="h6 fw-bold text-success mb-0"><i class="fa-solid fa-list-check me-1" aria-hidden="true"></i>Dettaglio Interventi (<span id="currentSeasonLabel">Stagione 2026</span>)</h2>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <button class="btn btn-outline-success btn-sm py-1" style="font-size: 0.75rem;" onclick="loadProgramLSP()">
+                                <i class="fa-solid fa-wand-magic-sparkles me-1" aria-hidden="true"></i> LSP
+                            </button>
+                            <button class="btn btn-outline-warning btn-sm py-1 text-dark" style="font-size: 0.75rem;" onclick="loadProgramSierraBlen()">
+                                <i class="fa-solid fa-seedling me-1" aria-hidden="true"></i> SierraBlen
+                            </button>
+                            <button class="btn btn-green btn-sm py-1" style="font-size: 0.75rem;" onclick="addNewRow()"><i class="fa-solid fa-plus me-1" aria-hidden="true"></i> Aggiungi</button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover table-custom align-middle" id="fertTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Periodo</th>
+                                    <th scope="col">Linea / Cat.</th>
+                                    <th scope="col">Prodotto / Intervento</th>
+                                    <th scope="col">Specifiche / Descrizione</th>
+                                    <th scope="col" style="text-align: center;">Dose</th>
+                                    <th scope="col">N</th>
+                                    <th scope="col">P2O5</th>
+                                    <th scope="col">K2O</th>
+                                    <th scope="col">Conf.</th>
+                                    <th scope="col" style="text-align: center;">Costo (€)</th>
+                                    <th scope="col">Tot. (€)</th>
+                                    <th scope="col" class="text-center no-print">Az.</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fertTableBody"></tbody>
+                            <tfoot class="table-light fw-bold" style="font-size: 0.8rem;">
+                                <tr>
+                                    <td colspan="5" class="text-end text-uppercase">Totali Annui:</td>
+                                    <td id="sumN" class="text-success">0</td>
+                                    <td id="sumP" class="text-primary">0</td>
+                                    <td id="sumK" class="text-info">0</td>
+                                    <td id="sumBags">0</td>
+                                    <td>-</td>
+                                    <td id="sumCost" class="text-purple">€ 0.00</td>
+                                    <td class="no-print"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-12 col-md-8 mx-auto">
+                            <div class="card p-2 border-0 bg-light shadow-sm">
+                                <h3 class="h6 fw-bold text-center text-secondary mb-2" style="font-size: 0.85rem;"><i class="fa-solid fa-chart-column me-1" aria-hidden="true"></i>Unità Totali Annue Apportate (kg/ha)</h3>
+                                <div style="height: 200px; position: relative;">
+                                    <canvas id="npkChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 p-2 summary-box mb-0" style="font-size: 0.82rem;">
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-circle-info fs-5 text-success me-2" aria-hidden="true"></i>
+                            <div>
+                                <p class="small text-muted mb-0">Gestisci fertilizzanti, fitofarmaci e pratiche manutentive (es. carotature con descrizione libera) in un'unica tabella integrata.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEZIONE 1: IRRIGAZIONE -->
+            <div class="tab-pane fade" id="irrigation-pane" role="tabpanel" aria-labelledby="irrigation-tab">
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="card card-custom h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2 class="h5 fw-bold text-dark mb-0"><i class="fa-solid fa-sliders me-2 text-primary"></i>Parametri & Meteo</h2>
+                                <button class="btn btn-outline-primary btn-sm" onclick="fetchWeatherData()"><i class="fa-solid fa-location-crosshairs me-1"></i>Rileva GPS</button>
+                            </div>
+
+                            <div class="mb-2 p-2 bg-light rounded small" id="gpsStatusBox" style="font-size: 0.73rem;">
+                                <i class="fa-solid fa-circle-info text-info me-1"></i>Posizione predefinita: Casaleone (VR). Clicca "Rileva GPS" per aggiornare.
+                            </div>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label for="turfType" class="form-label small fw-bold">Tipo Tappeto</label>
+                                    <select id="turfType" class="form-select form-select-sm" onchange="onTurfOrSeasonChange()">
+                                        <option value="c3">Microterme (C3)</option>
+                                        <option value="c4">Macroterme (C4)</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <label for="seasonSelect" class="form-label small fw-bold">Stagione</label>
+                                    <select id="seasonSelect" class="form-select form-select-sm" onchange="updateDefaultET0()">
+                                        <option value="summer">Estate</option>
+                                        <option value="spring">Primavera/Autunno</option>
+                                        <option value="winter">Inverno</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label for="et0Input" class="form-label small fw-bold">ET0 Reale (mm/g)</label>
+                                    <input type="number" id="et0Input" class="form-control form-control-sm" value="5.0" step="0.1" min="0" oninput="runAllCalculations()">
+                                </div>
+                                <div class="col-6">
+                                    <label for="rainInput" class="form-label small fw-bold">Pioggia 7gg (mm)</label>
+                                    <input type="number" id="rainInput" class="form-control form-control-sm" value="0" step="0.5" min="0" oninput="runAllCalculations()">
+                                </div>
+                            </div>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-12">
+                                    <label for="microclimate" class="form-label small fw-bold">Microclima</label>
+                                    <select id="microclimate" class="form-select form-select-sm" onchange="runAllCalculations()">
+                                        <option value="full_sun">Pieno Sole (100%)</option>
+                                        <option value="partial_shade">Ombra Parziale (85%)</option>
+                                        <option value="full_shade">Ombra Totale (70%)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label for="areaInput" class="form-label small fw-bold">Superficie (mq)</label>
+                                    <input type="number" id="areaInput" class="form-control form-control-sm" value="5000" min="1" oninput="runAllCalculations()">
+                                </div>
+                                <div class="col-6">
+                                    <label for="reintegratePct" class="form-label small fw-bold">Reintegro (%)</label>
+                                    <input type="number" id="reintegratePct" class="form-control form-control-sm" value="100" min="0" max="150" step="5" oninput="runAllCalculations()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card card-custom h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <h2 class="h5 fw-bold text-dark mb-3"><i class="fa-solid fa-square-poll-vertical me-2 text-success"></i>Pianificazione Irrigua</h2>
+                                
+                                <div class="result-box mb-3">
+                                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.68rem;">Bilancio Idrico Settimanale (Lordo - Pioggia)</div>
+                                    <div id="weeklyWaterDisp" class="fs-4 fw-bold text-secondary">35.0 mm</div>
+                                    <div class="text-muted small" id="effectiveRainDisp" style="font-size: 0.72rem;">Pioggia efficace detratta: 0 mm</div>
+                                </div>
+
+                                <div class="result-box mb-3" style="border-left-color: #10b981;">
+                                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.68rem;">Fabbisogno Irriguo Netto (Settimanale)</div>
+                                    <div id="netWeeklyWaterDisp" class="fs-3 fw-bold text-success">35.0 mm</div>
+                                    <div class="text-muted small" id="totalVolumeDisp" style="font-size: 0.72rem;">Volume totale mancante per la superficie</div>
+                                </div>
+
+                                <div class="result-box mb-3" style="border-left-color: #3b82f6;">
+                                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.68rem;">Turni Consigliati</div>
+                                    <div id="irrigationScheduleDisp" class="fs-6 fw-bold text-primary mt-1">3 interventi a settimana</div>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 text-center">
+                                <button class="btn btn-outline-secondary btn-sm w-100" onclick="resetDefaults()">Ripristina Predefiniti</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEZIONE 2: GDD & PRIMO MAXX II -->
+            <div class="tab-pane fade" id="gdd-pane" role="tabpanel" aria-labelledby="gdd-tab">
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="card card-custom h-100">
+                            <h2 class="h5 fw-bold text-success mb-3"><i class="fa-solid fa-temperature-arrow-up me-2"></i>Modello GDD & Storico (Purdue)</h2>
+                            <p class="text-muted small mb-3">Calcola l'accumulo dei gradi giorno dalla data scelta interrogando l'archivio meteo.</p>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-12">
+                                    <label for="startDateGdd" class="form-label small fw-bold">Data Inizio Conteggio Storico</label>
+                                    <input type="date" id="startDateGdd" class="form-control form-control-sm" value="2026-03-01">
+                                </div>
+                            </div>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label for="baseTemp" class="form-label small fw-bold">Temperatura Base (°C)</label>
+                                    <input type="number" id="baseTemp" class="form-control form-control-sm" value="10" step="1" oninput="runAllCalculations()">
+                                </div>
+                                <div class="col-6 d-flex align-items-end">
+                                    <button class="btn btn-success btn-sm w-100" onclick="fetchHistoricalGDD()"><i class="fa-solid fa-calculator me-1"></i>Aggiorna Storico</button>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label for="tempMax" class="form-label small fw-bold">T. Max Odierna (°C)</label>
+                                    <input type="number" id="tempMax" class="form-control form-control-sm" value="28.0" step="0.5" oninput="runAllCalculations()">
+                                </div>
+                                <div class="col-6">
+                                    <label for="tempMin" class="form-label small fw-bold">T. Min Odierna (°C)</label>
+                                    <input type="number" id="tempMin" class="form-control form-control-sm" value="16.0" step="0.5" oninput="runAllCalculations()">
+                                </div>
+                            </div>
+
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label for="accumulatedGdd" class="form-label small fw-bold">GDD Accumulati Totali</label>
+                                    <input type="number" id="accumulatedGdd" class="form-control form-control-sm" value="0" step="1" min="0" oninput="runAllCalculations()">
+                                </div>
+                                <div class="col-6">
+                                    <label for="targetGdd" class="form-label small fw-bold">Target PGR (Regolatore)</label>
+                                    <select id="targetGdd" class="form-select form-select-sm" onchange="runAllCalculations()">
+                                        <option value="200">200 GDD (Primo Maxx std)</option>
+                                        <option value="250">250 GDD (Moderata)</option>
+                                        <option value="150">150 GDD (Spinta)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card card-custom h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <h2 class="h5 fw-bold text-dark mb-3"><i class="fa-solid fa-flask-vial me-2 text-success"></i>Dose Ufficiale Primo Maxx II</h2>
+                                <p class="text-muted small mb-3">Calcolo basato su etichetta Syngenta in base alla specie erbosa, altezza di taglio e destinazione.</p>
+
+                                <div class="row g-2 mb-3">
+                                    <div class="col-12">
+                                        <label for="turfSpecies" class="form-label small fw-bold">Specie Erbosa / Varietà</label>
+                                        <select id="turfSpecies" class="form-select form-select-sm" onchange="calculatePrimoDosage()">
+                                            <option value="agrostis">Agrostis spp. (Bentgrass)</option>
+                                            <option value="festuca">Festuca spp. (Fescue)</option>
+                                            <option value="poa">Poa pratensis / Poa annua</option>
+                                            <option value="lolium" selected>Lolium perenne (Loietto)</option>
+                                            <option value="cynodon">Cynodon dactylon & Altre Macroterme</option>
+                                            <option value="mixed">Miscuglio / Tappeto misto generale</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <label for="cutHeight" class="form-label small fw-bold">Altezza di Taglio</label>
+                                        <select id="cutHeight" class="form-select form-select-sm" onchange="calculatePrimoDosage()">
+                                            <option value="greens">Greens / Taglio bassissimo (&lt; 7 mm)</option>
+                                            <option value="fairways" selected>Fairways / Tees / Sportivo (8-18 mm)</option>
+                                            <option value="rough">Rough / Residenziale alto (&gt; 18 mm)</option>
+                                            <option value="lolium_high">Aree a prevalenza Lolium spp. (&gt; 18 mm)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="primoIntensity" class="form-label small fw-bold">Intensità / Frequenza</label>
+                                        <select id="primoIntensity" class="form-select form-select-sm" onchange="calculatePrimoDosage()">
+                                            <option value="min">Dose Minima / Manutenzione</option>
+                                            <option value="max">Dose Massima / Piena spinta</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="result-box mb-3" style="border-left-color: #10b981;">
+                                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.68rem;">Dosaggio Consigliato (Etichetta Syngenta)</div>
+                                    <div id="primoRateDisp" class="fs-5 fw-bold text-success mt-1">-- ml / 100 mq (0.4 l/ha)</div>
+                                    <div class="text-muted small mt-1" id="primoTotalVolumeDisp" style="font-size: 0.72rem;">Quantità totale per la superficie: -- ml</div>
+                                    <div class="text-muted mt-1" id="speciesWarningDisp" style="font-size: 0.68rem; font-style: italic;"></div>
+                                </div>
+
+                                <div class="result-box" style="border-left-color: #8b5cf6;">
+                                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.68rem;">Stato Regolatore di Crescita (GDD)</div>
+                                    <div id="dailyGddDisp" class="small fw-bold text-dark mt-1">GDD giornalieri stimati: --</div>
+                                    <div id="pgrStatusDisp" class="small text-secondary mt-1">Calcola lo storico GDD per visualizzare lo stato.</div>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 text-center">
+                                <button class="btn btn-outline-success btn-sm w-100" onclick="fetchHistoricalGDD()"><i class="fa-solid fa-rotate-right me-1"></i>Aggiorna Dati GDD & PGR</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEZIONE 3: ANTIGERMINELLO -->
+            <div class="tab-pane fade" id="herbicide-pane" role="tabpanel" aria-labelledby="herbicide-tab">
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="card card-custom h-100">
+                            <h2 class="h5 fw-bold text-danger mb-3"><i class="fa-solid fa-shield-halved me-2"></i>Gestione Antigerminello</h2>
+                            <p class="text-muted small mb-3">Seleziona l'infestante target per verificare la finestra di applicazione ottimale in base alle temperature medie rilevate.</p>
+
+                            <div class="mb-3">
+                                <label for="weedTarget" class="form-label small fw-bold">Seleziona Infestante Target</label>
+                                <select id="weedTarget" class="form-select" onchange="calculateHerbicideAlert()">
+                                    <optgroup label="Infestanti Estive (Germinazione Primaverile/Estiva)">
+                                        <option value="digitaria">Digitaria / Sanguinella (Digitaria sanguinalis) - 12-15°C</option>
+                                        <option value="eleusine">Eleusine / Crowsfoot (Eleusine indica) - 15-18°C</option>
+                                        <option value="setaria">Setaria / Panico (Setaria spp.) - 16-20°C</option>
+                                        <option value="portulaca">Portulaca / Erba porcellana (Portulaca oleracea) - 18-22°C</option>
+                                        <option value="echinochloa">Giavone (Echinochloa crus-galli) - 16-20°C</option>
+                                        <option value="amaranthus">Amaranto / Amaranthus (Amaranthus spp.) - 18-24°C</option>
+                                    </optgroup>
+                                    <optgroup label="Infestanti Invernali / Autunnali (Germinazione Autunnale)">
+                                        <option value="poa_annua">Poa annua / Fienarola annuale - 14-22°C</option>
+                                        <option value="stellaria">Stellaria / Centocchio (Stellaria media) - 10-18°C</option>
+                                        <option value="capsella">Borsapastore (Capsella bursa-pastoris) - 10-18°C</option>
+                                        <option value="veronica">Veronica / Occhi della Madonna (Veronica spp.) - 12-18°C</option>
+                                        <option value="poa_trivialis">Fienarola triviale (Poa trivialis) - 12-18°C</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+
+                            <div class="alert alert-light border small text-muted mb-0">
+                                <i class="fa-solid fa-circle-info text-primary me-1"></i> I valori termici di riferimento sono sincronizzati con i dati meteo attuali.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card card-custom h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <h2 class="h5 fw-bold text-dark mb-3"><i class="fa-solid fa-triangle-exclamation me-2 text-danger"></i>Stato Finestra di Trattamento</h2>
+                                
+                                <div class="result-box mb-3">
+                                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.68rem;">Temperatura Media Attuale (Rilevata)</div>
+                                    <div id="herbicideAvgTempDisp" class="fs-4 fw-bold text-secondary">-- °C</div>
+                                </div>
+
+                                <div class="result-box" style="border-left-color: #ef4444;" id="herbicideBox">
+                                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.68rem;">Esito Monitoraggio Pre-Emergenza</div>
+                                    <div id="herbicideStatusDisp" class="small fw-bold text-dark mt-1">Valutazione in corso...</div>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 text-center">
+                                <button class="btn btn-outline-danger btn-sm w-100" onclick="document.getElementById('weedTarget').value='digitaria'; calculateHerbicideAlert();"><i class="fa-solid fa-rotate-right me-1"></i>Reimposta Antigerminello</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CALCOLA SABBIA CAROTATURA TAB -->
+            <div class="tab-pane fade" id="coring-pane" role="tabpanel" aria-labelledby="coring-tab">
+                <div class="card card-custom">
+                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap">
+                        <div>
+                            <h2 class="h6 fw-bold text-success mb-1"><i class="fa-solid fa-layer-group me-1" aria-hidden="true"></i>Calcolatore Sabbia Topdressing (Coring)</h2>
+                            <p class="small text-muted mb-0" style="font-size: 0.75rem;">Standard Purdue Turf Science e ISTRC.</p>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-lg-6">
+                            <div class="card p-2 border-0 bg-light h-100 mb-0">
+                                <h3 class="h6 fw-bold text-secondary mb-2" style="font-size: 0.85rem;"><i class="fa-solid fa-sliders me-1"></i>Parametri di Carotatura</h3>
+                                
+                                <div class="mb-2">
+                                    <label for="coringArea" class="form-label small fw-bold mb-1">Superficie da Trattare (mq)</label>
+                                    <input type="number" id="coringArea" class="form-control form-control-sm" value="5000" min="1" oninput="calculateCoring()">
+                                </div>
+
+                                <div class="row g-2 mb-2">
+                                    <div class="col-6">
+                                        <label for="prongDiam" class="form-label small fw-bold mb-1">Diametro Carota (mm)</label>
+                                        <input type="number" id="prongDiam" class="form-control form-control-sm" value="12" min="1" step="0.5" oninput="calculateCoring()">
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="prongDepth" class="form-label small fw-bold mb-1">Profondità (cm)</label>
+                                        <input type="number" id="prongDepth" class="form-control form-control-sm" value="7" min="1" step="0.5" oninput="calculateCoring()">
+                                    </div>
+                                </div>
+
+                                <div class="row g-2 mb-2">
+                                    <div class="col-6">
+                                        <label for="spacingX" class="form-label small fw-bold mb-1">Spaziatura File (cm)</label>
+                                        <input type="number" id="spacingX" class="form-control form-control-sm" value="5" min="1" oninput="calculateCoring()">
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="spacingY" class="form-label small fw-bold mb-1">Spaziatura Fila (cm)</label>
+                                        <input type="number" id="spacingY" class="form-control form-control-sm" value="5" min="1" oninput="calculateCoring()">
+                                    </div>
+                                </div>
+
+                                <div class="mb-1">
+                                    <label for="sandDensity" class="form-label small fw-bold mb-1">Peso Specifico Sabbia (t/m³)</label>
+                                    <input type="number" id="sandDensity" class="form-control form-control-sm" value="1.4" min="0.8" max="2.0" step="0.05" oninput="calculateCoring()">
+                                    <small class="text-muted" style="font-size: 0.7rem;">Standard silicea asciutta: ~1.4 - 1.5 t/m³</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="card p-3 border-0 bg-white shadow-sm h-100 border-start border-4 border-success mb-0">
+                                <h3 class="h6 fw-bold text-success mb-2" style="font-size: 0.85rem;"><i class="fa-solid fa-square-poll-vertical me-1"></i>Risultati & Fabbisogno</h3>
+                                
+                                <div class="mb-2 p-2 bg-light rounded">
+                                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.68rem;">1. Superficie Rimossa</div>
+                                    <div id="resSurfaceDisp" class="fs-4 fw-bold text-primary">0.00 %</div>
+                                </div>
+
+                                <div class="mb-2 p-2 bg-light rounded">
+                                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.68rem;">2. Volume Sabbia Necessario</div>
+                                    <div id="resVolumeM3" class="fs-4 fw-bold text-success">0.00 m³</div>
+                                    <div class="text-muted small" id="resVolumeMm" style="font-size: 0.72rem;">Equivalente a 0.0 mm sul totale</div>
+                                </div>
+
+                                <div class="p-2 bg-light rounded">
+                                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.68rem;">3. Peso Totale Sabbia Stimato</div>
+                                    <div id="resWeightTons" class="fs-4 fw-bold text-purple">0.00 tonnellate</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-2 summary-box mb-0" style="font-size: 0.8rem;">
+                        <h4 class="h6 fw-bold mb-1" style="font-size: 0.82rem;"><i class="fa-solid fa-circle-info me-1 text-success"></i>Note tecniche (Purdue Turf Science):</h4>
+                        <p class="small text-muted mb-0" style="font-size: 0.75rem;">
+                            Superficie Impattata (%) = (Area Foro / Spaziatura) × 100. Il volume corrisponde al riempimento totale dei fori creati.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SMITH-KERNS DOLLAR SPOT TAB -->
+            <div class="tab-pane fade" id="ds-pane" role="tabpanel" aria-labelledby="ds-tab">
+                <div class="card card-custom">
+                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                        <div>
+                            <h2 class="h6 fw-bold text-warning mb-1" style="color: var(--warning-custom) !important;"><i class="fa-solid fa-bug me-1" aria-hidden="true"></i>Modello Smith-Kerns (Dollar Spot)</h2>
+                            <p class="small text-muted mb-0" style="font-size: 0.75rem;">Probabilità di infezione basata su temperatura e umidità rel. (5gg).</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <button id="btnGeoWeather" class="btn btn-primary btn-sm py-1 rounded-pill text-nowrap" style="font-size: 0.75rem;" onclick="fetchWeatherData()">
+                                <i class="fa-solid fa-location-crosshairs me-1" aria-hidden="true"></i> Rileva GPS
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-4">
+                            <div class="card p-2 border-0 bg-light h-100 mb-0">
+                                <label class="text-muted small fw-bold text-uppercase mb-1" style="font-size: 0.68rem;">Località GPS</label>
+                                <div class="d-flex align-items-center gap-1">
+                                    <span class="fw-bold text-dark small" id="locName">In attesa di posizione...</span>
+                                </div>
+                                <span class="small text-muted mt-1" style="font-size: 0.7rem;">Dati meteo live Open-Meteo</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card p-2 border-0 bg-light text-center h-100 mb-0">
+                                <div class="text-muted small fw-bold text-uppercase mb-1" style="font-size: 0.68rem;">Probabilità Epidemia</div>
+                                <div id="dsProbabilityVal" class="fs-3 fw-bold text-secondary">-- %</div>
+                                <div id="dsRiskBadge" class="mt-1"><span class="badge bg-secondary" style="font-size: 0.7rem;">In attesa...</span></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card p-2 border-0 bg-light h-100 mb-0" style="font-size: 0.8rem;">
+                                <div class="text-muted small fw-bold text-uppercase mb-1" style="font-size: 0.68rem;">Parametri 5 Giorni</div>
+                                <div class="mt-1">
+                                    <strong>Temp. Media:</strong> <span id="avgTemp">--</span> °C<br>
+                                    <strong>Umidità Rel.:</strong> <span id="avgRh">--</span> %<br>
+                                    <strong>Soglia Rischio:</strong> <span class="badge bg-warning text-dark" style="font-size: 0.65rem;">20%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card p-2 border-0 bg-light shadow-sm mb-3">
+                        <h3 class="h6 fw-bold text-secondary mb-2" style="font-size: 0.82rem;"><i class="fa-solid fa-chart-area me-1" aria-hidden="true"></i>Andamento Dollar Spot (14 Giorni)</h3>
+                        <div style="height: 220px; position: relative;" class="mb-3">
+                            <canvas id="dsChart"></canvas>
+                        </div>
+                        <h4 class="h6 fw-bold text-secondary mb-2" style="font-size: 0.8rem;"><i class="fa-solid fa-table-list me-1"></i>Riepilogo Numerico Rischio</h4>
+                        <div class="table-responsive" style="max-height: 150px; overflow-y: auto;">
+                            <table class="table table-sm table-striped table-bordered mb-0" style="font-size: 0.75rem;" id="dsNumericTable">
+                                <thead class="table-secondary">
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Rischio Dollar Spot (%)</th>
+                                        <th>Stato</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dsNumericTableBody">
+                                    <tr><td colspan="3" class="text-center text-muted">In attesa di caricamento dati...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="p-2 summary-box summary-box-warning mb-0" style="font-size: 0.8rem;">
+                        <h4 class="h6 fw-bold mb-1" style="font-size: 0.82rem;"><i class="fa-solid fa-circle-info me-1 text-warning" aria-hidden="true"></i>Interpretazione:</h4>
+                        <p class="small text-muted mb-0" style="font-size: 0.75rem;">
+                            Sopra il <strong>20%</strong> le condizioni favoriscono il <em>Dollar Spot (Clarireedia spp.)</em>. Valutare trattamenti preventivi con fitofarmaci registrati (es. <em>Heritage, Instrata Elite</em>).
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MICRODOCHIUM PATCH MODEL TAB -->
+            <div class="tab-pane fade" id="microdochium-pane" role="tabpanel" aria-labelledby="microdochium-tab">
+                <div class="card card-custom">
+                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                        <div>
+                            <h2 class="h6 fw-bold mb-1" style="color: var(--microdochium-color) !important;"><i class="fa-solid fa-snowflake me-1" aria-hidden="true"></i>Microdochium Patch (Fusarium)</h2>
+                            <p class="small text-muted mb-0" style="font-size: 0.75rem;">Temperature fresche (5°C - 20°C) e umidità persistente.</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm py-1 rounded-pill" style="font-size: 0.75rem;" onclick="fetchWeatherData()">
+                            <i class="fa-solid fa-location-crosshairs me-1" aria-hidden="true"></i> Aggiorna Meteo GPS
+                        </button>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-4">
+                            <div class="card p-2 border-0 bg-light text-center h-100 mb-0">
+                                <div class="text-muted small fw-bold text-uppercase mb-1" style="font-size: 0.68rem;">Rischio Microdochium</div>
+                                <div id="micProbabilityVal" class="fs-3 fw-bold text-secondary">-- %</div>
+                                <div id="micRiskBadge" class="mt-1"><span class="badge bg-secondary" style="font-size: 0.7rem;">In attesa...</span></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card p-2 border-0 bg-light h-100 mb-0" style="font-size: 0.8rem;">
+                                <div class="text-muted small fw-bold text-uppercase mb-1" style="font-size: 0.68rem;">Fattori Chiave</div>
+                                <div class="mt-1">
+                                    <strong>Temp. Media:</strong> <span id="micAvgTemp">--</span> °C<br>
+                                    <strong>Umidità Rel.:</strong> <span id="micAvgRh">--</span> %<br>
+                                    <strong>Soglia:</strong> <span class="badge bg-info text-dark" style="font-size: 0.65rem;">> 60%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card p-2 border-0 bg-light h-100 mb-0" style="font-size: 0.78rem;">
+                                <div class="text-muted small fw-bold text-uppercase mb-1" style="font-size: 0.68rem;">Difesa ICL</div>
+                                <div class="mt-1 text-muted">
+                                    In autunno/inverno valutare <em>Instrata Elite</em> o <em>Heritage</em> e moderare l'azoto pronto effetto.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card p-2 border-0 bg-light shadow-sm mb-3">
+                        <h3 class="h6 fw-bold text-secondary mb-2" style="font-size: 0.82rem;"><i class="fa-solid fa-chart-area me-1" aria-hidden="true"></i>Andamento Rischio Microdochium</h3>
+                        <div style="height: 220px; position: relative;">
+                            <canvas id="microdochiumChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="p-2 summary-box summary-box-info mb-0" style="font-size: 0.8rem;">
+                        <h4 class="h6 fw-bold mb-1" style="font-size: 0.82rem;"><i class="fa-solid fa-circle-info me-1 text-info" aria-hidden="true"></i>Interpretazione:</h4>
+                        <p class="small text-muted mb-0" style="font-size: 0.75rem;">
+                            <em>Microdochium nivale</em> predilige climi umidi e freschi. Indici elevati sotto i 18-20°C con nebbie e rugiade persistenti.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BROWN PATCH MODEL TAB -->
+            <div class="tab-pane fade" id="brownpatch-pane" role="tabpanel" aria-labelledby="brownpatch-tab">
+                <div class="card card-custom">
+                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                        <div>
+                            <h2 class="h6 fw-bold mb-1" style="color: var(--brownpatch-color) !important;"><i class="fa-solid fa-sun me-1" aria-hidden="true"></i>Brown Patch (Rizoctonia solani)</h2>
+                            <p class="small text-muted mb-0" style="font-size: 0.75rem;">Temperature calde (> 18°C) e bagnatura fogliare prolungata.</p>
+                        </div>
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-primary btn-sm py-1 rounded-pill" style="font-size: 0.75rem;" onclick="fetchWeatherData()">
+                                <i class="fa-solid fa-location-crosshairs me-1" aria-hidden="true"></i> Aggiorna Meteo GPS
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-4">
+                            <div class="card p-2 border-0 bg-light text-center h-100 mb-0">
+                                <div class="text-muted small fw-bold text-uppercase mb-1" style="font-size: 0.68rem;">Rischio Brown Patch</div>
+                                <div id="bpProbabilityVal" class="fs-3 fw-bold text-secondary">-- %</div>
+                                <div id="bpRiskBadge" class="mt-1"><span class="badge bg-secondary" style="font-size: 0.7rem;">In attesa...</span></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card p-2 border-0 bg-light h-100 mb-0" style="font-size: 0.8rem;">
+                                <div class="text-muted small fw-bold text-uppercase mb-1" style="font-size: 0.68rem;">Parametri Giornalieri</div>
+                                <div class="mt-1">
+                                    <div class="d-flex justify-content-between"><span>Temp. Media:</span> <strong id="bpAvgTemp">--</strong> <strong>°C</strong></div>
+                                    <div class="d-flex justify-content-between"><span>Umidità (RH):</span> <strong id="bpAvgRh">--</strong> <strong>%</strong></div>
+                                    <div class="d-flex justify-content-between"><span>Soglia:</span> <span class="badge bg-warning text-dark" style="font-size: 0.65rem;">> 55%</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card p-2 border-0 bg-light h-100 mb-0" style="font-size: 0.78rem;">
+                                <div class="text-muted small fw-bold text-uppercase mb-1" style="font-size: 0.68rem;">Gestione Agronomica</div>
+                                <div class="mt-1 text-muted">
+                                    Irrigare esclusivamente al mattino presto per azzerare il bagnamento notturno.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card p-2 border-0 bg-light shadow-sm mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h3 class="h6 fw-bold text-secondary mb-0" style="font-size: 0.82rem;"><i class="fa-solid fa-chart-area me-1" aria-hidden="true"></i>Andamento Indice Rischio</h3>
+                        </div>
+                        <div style="height: 220px; position: relative;">
+                            <canvas id="brownPatchChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="summary-box-brownpatch mb-0" style="font-size: 0.8rem;">
+                        <h4 class="h6 fw-bold mb-1" style="font-size: 0.82rem;"><i class="fa-solid fa-circle-info me-1" style="color: var(--brownpatch-color);" aria-hidden="true"></i>Interpretazione:</h4>
+                        <p class="small text-muted mb-0" style="font-size: 0.75rem;">
+                            <em>Rizoctonia</em> accelera con temperature sopra i 20°C e umidità elevata. Sopra il 55% si raccomanda ispezione visiva.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PYRICULARIA MODEL TAB (ITM) -->
+            <div class="tab-pane fade" id="pyricularia-pane" role="tabpanel" aria-labelledby="pyricularia-tab">
+                <div class="card card-custom">
+                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                        <div>
+                            <h2 class="h6 fw-bold mb-1" style="color: var(--py-primary) !important;"><i class="fa-solid fa-seedling me-1" aria-hidden="true"></i>Pyricularia Grisea - ITM (Geolocalizzato)</h2>
+                            <p class="small text-muted mb-0" style="font-size: 0.75rem;">Modello agrometeorologico per Zoysia e Lolium basato su coordinate GPS live.</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm py-1 rounded-pill" style="font-size: 0.75rem;" onclick="fetchWeatherData()">
+                            <i class="fa-solid fa-location-crosshairs me-1" aria-hidden="true"></i> Aggiorna Meteo GPS
+                        </button>
+                    </div>
+
+                    <div id="pyStatusBox" class="p-2 mb-2 rounded border fw-bold text-center" style="font-size: 0.8rem;">
+                        In attesa dati meteo GPS...
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-4">
+                            <div class="card p-2 border-0 bg-light text-center h-100 mb-0">
+                                <div class="text-muted small fw-bold text-uppercase mb-1" style="font-size: 0.68rem;">Indice di Rischio (ITM)</div>
+                                <div id="pyRiskIndex" class="fs-3 fw-bold text-secondary">-- / 100</div>
+                                <div id="pyRiskBadgeContainer" class="mt-1"><span class="badge bg-secondary" style="font-size: 0.7rem;">In attesa...</span></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card p-2 border-0 bg-light h-100 mb-0" style="font-size: 0.8rem;">
+                                <div class="text-muted small fw-bold text-uppercase mb-1" style="font-size: 0.68rem;">Parametri Meteo GPS</div>
+                                <div class="mt-1">
+                                    <div class="d-flex justify-content-between"><span>Temp. Media (5gg):</span> <strong id="pyAvgTemp">-- °C</strong></div>
+                                    <div class="d-flex justify-content-between"><span>Umidità (RH 5gg):</span> <strong id="pyAvgRh">-- %</strong></div>
+                                    <div class="d-flex justify-content-between"><span>Pioggia Tot. (7gg):</span> <strong id="pyRainTot">-- mm</strong></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card p-2 border-0 bg-light h-100 mb-0" style="font-size: 0.78rem;">
+                                <div class="text-muted small fw-bold text-uppercase mb-1" style="font-size: 0.68rem;">Soglia di Attenzione</div>
+                                <div class="mt-1 text-muted">
+                                    Soglia critica fissata a <strong>> 50 / 100</strong> con temperature ottimali 24-32°C.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card p-2 border-0 bg-light shadow-sm mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h3 class="h6 fw-bold text-secondary mb-0" style="font-size: 0.82rem;"><i class="fa-solid fa-chart-area me-1" aria-hidden="true"></i>Andamento Indice Pyricularia (Ultimi 14 Giorni)</h3>
+                        </div>
+                        <div style="height: 220px; position: relative;" class="mb-3">
+                            <canvas id="pyriculariaChart"></canvas>
+                        </div>
+                        <h4 class="h6 fw-bold text-secondary mb-2" style="font-size: 0.8rem;"><i class="fa-solid fa-table-list me-1"></i>Riepilogo Numerico Rischio Pyricularia</h4>
+                        <div class="table-responsive" style="max-height: 150px; overflow-y: auto;">
+                            <table class="table table-sm table-striped table-bordered mb-0" style="font-size: 0.75rem;" id="pyNumericTable">
+                                <thead class="table-secondary">
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Indice Pyricularia (0-100)</th>
+                                        <th>Stato</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pyNumericTableBody">
+                                    <tr><td colspan="3" class="text-center text-muted">In attesa di caricamento dati meteo...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card p-2 border-0 bg-light shadow-sm mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h3 class="h6 fw-bold text-secondary mb-0" style="font-size: 0.82rem;"><i class="fa-solid fa-circle-exclamation me-1" aria-hidden="true"></i>Linee Guida Operative (ITM)</h3>
+                        </div>
+                        <ul class="small text-muted ps-3 mb-0" style="font-size: 0.75rem;">
+                            <li class="mb-1"><strong>Sviluppo:</strong> <em>Pyricularia grisea</em> (Gray Leaf Spot) prolifera tra 24°C e 32°C con bagnatura fogliare e azoto spinto.</li>
+                            <li class="mb-1"><strong>Nutrizione:</strong> Evitare forme ammoniacali o ureiche a pronto effetto estivo su <em>Zoysia</em> e <em>Lolium</em>. Preferire cessione controllata ICL.</li>
+                            <li><strong>Prevenzione:</strong> Pianificare trattamenti con fungicidi registrati (es. azoxystrobin) al crescere dell'indice ITM.</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-2 summary-box mb-0" style="border-left-color: var(--py-primary) !important; background-color: #f0fdf4; font-size: 0.8rem;">
+                        <h4 class="h6 fw-bold mb-1" style="color: var(--py-primary); font-size: 0.82rem;"><i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>Nota sul Modello:</h4>
+                        <p class="small text-muted mb-0" style="font-size: 0.75rem;" id="pyLocationInfo">
+                            Modello integrato ITM (Turf Toolbox) - API Open-Meteo GPS.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FITOFARMACI TAB -->
+            <div class="tab-pane fade" id="pesticide-pane" role="tabpanel" aria-labelledby="pesticide-tab">
+                <div class="card card-custom">
+                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                        <h2 class="h6 fw-bold text-danger mb-0"><i class="fa-solid fa-prescription-bottle-medical me-1" aria-hidden="true"></i>Fitofarmaci Registrati ICL</h2>
+                        <div class="w-100 w-md-25" style="min-width: 180px;">
+                            <label for="searchPesticide" class="visually-hidden">Cerca fitofarmaco</label>
+                            <input type="text" id="searchPesticide" class="form-control form-control-sm" placeholder="Cerca fitofarmaco..." onkeyup="filterPesticides()">
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-custom" id="pesticidesTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Cat.</th>
+                                    <th scope="col">Nome</th>
+                                    <th scope="col">Principio Attivo</th>
+                                    <th scope="col">Target</th>
+                                    <th scope="col">Dose</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pesticidesTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-2 p-2 bg-light rounded border-start border-4 border-danger" style="font-size: 0.78rem;">
+                        <small class="text-muted"><i class="fa-solid fa-triangle-exclamation me-1 text-danger" aria-hidden="true"></i> <strong>Nota Legale:</strong> Usare i prodotti fitosanitari con precauzione. Leggere sempre l'etichetta prima dell'uso.</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LEGENDA & PRODUCTS TAB -->
+            <div class="tab-pane fade" id="legenda-pane" role="tabpanel" aria-labelledby="legenda-tab">
+                <div class="card card-custom">
+                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                        <h2 class="h6 fw-bold text-success mb-0"><i class="fa-solid fa-boxes-stacked me-1" aria-hidden="true"></i>Catalogo Prodotti ICL</h2>
+                        <div class="w-100 w-md-25" style="min-width: 180px;">
+                            <label for="searchProduct" class="visually-hidden">Cerca prodotto</label>
+                            <input type="text" id="searchProduct" class="form-control form-control-sm" placeholder="Cerca prodotto..." onkeyup="filterProducts()">
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-custom" id="productsTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Linea</th>
+                                    <th scope="col">Prodotto</th>
+                                    <th scope="col">Titolo</th>
+                                    <th scope="col">N</th>
+                                    <th scope="col">P</th>
+                                    <th scope="col">K</th>
+                                    <th scope="col">Durata</th>
+                                    <th scope="col">Conf.</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GROWTH POTENTIAL CURVE TAB -->
+            <div class="tab-pane fade" id="gp-pane" role="tabpanel" aria-labelledby="gp-tab">
+                <div class="card card-custom">
+                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                        <div>
+                            <h2 class="h6 fw-bold text-success mb-1"><i class="fa-solid fa-seedling me-1" aria-hidden="true"></i>Curva Potenziale di Crescita & Apporti N</h2>
+                            <p class="small text-muted mb-0" style="font-size: 0.75rem;">Confronto GP (%) vs Azoto mensile (kg/ha).</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <label for="selectTurfType" class="small fw-bold" style="font-size: 0.75rem;">Tipo:</label>
+                            <select id="selectTurfType" class="form-select form-select-sm" style="font-size: 0.75rem; width: auto;" onchange="updateGPChartType(this.value)">
+                                <option value="c3" selected>Microterme (C3)</option>
+                                <option value="c4">Macroterme (C4)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-6">
+                            <div class="card p-2 border-0 bg-light h-100 mb-0" style="font-size: 0.78rem;">
+                                <h3 class="h6 fw-bold text-secondary mb-1" style="font-size: 0.82rem;"><i class="fa-solid fa-calculator me-1"></i> Fondamenti</h3>
+                                <p class="small text-muted mb-1">Formula PACE Turf:</p>
+                                <div class="p-1 bg-white rounded border text-center font-monospace small mb-1" style="font-size: 0.72rem;">
+                                    GP = exp(-((T_act - T_opt) / V)^2)
+                                </div>
+                                <ul class="small text-muted ps-3 mb-0">
+                                    <li><strong>C3:</strong> T_opt = 20 °C (16-24 °C).</li>
+                                    <li><strong>C4:</strong> T_opt = 31 °C (27-35 °C).</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card p-2 border-0 bg-light h-100 mb-0" style="font-size: 0.78rem;">
+                                <h3 class="h6 fw-bold text-secondary mb-1" style="font-size: 0.82rem;"><i class="fa-solid fa-lightbulb me-1"></i> Sincronizzazione</h3>
+                                <p class="small text-muted mb-0">Le barre blu indicano l'Azoto (N) ripartito dinamicamente dai dati inseriti nella tabella degli interventi. L'obiettivo è fare coincidere la cessione con GP alto (> 50%).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card p-2 border-0 bg-light shadow-sm mb-0">
+                        <h3 class="h6 fw-bold text-secondary mb-2" style="font-size: 0.82rem;"><i class="fa-solid fa-chart-line me-1" aria-hidden="true"></i> Grafico: GP (%) vs Azoto (kg/ha)</h3>
+                        <div style="height: 240px; position: relative;">
+                            <canvas id="gpChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUADERNO DI CAMPAGNA -->
+            <div class="tab-pane fade" id="quaderno-pane" role="tabpanel" aria-labelledby="quaderno-tab">
+                <div class="card card-custom">
+                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                        <div>
+                            <h2 class="h6 fw-bold text-success mb-1"><i class="fa-solid fa-book me-1"></i>Quaderno di Campagna (Registro Trattamenti)</h2>
+                            <p class="small text-muted mb-0">Registra le applicazioni effettuate in campo, operatori e condizioni meteo (salvataggio automatico locale).</p>
+                        </div>
+                        <button class="btn btn-green btn-sm" onclick="addQuadernoRow()"><i class="fa-solid fa-plus me-1"></i>Aggiungi Registrazione</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-custom align-middle" id="quadernoTable">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Operazione / Trattamento</th>
+                                    <th>Operatore</th>
+                                    <th>Note / Meteo</th>
+                                    <th class="text-center">Az.</th>
+                                </tr>
+                            </thead>
+                            <tbody id="quadernoTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEZIONE MAPPA SATELLITARE & GEOLOCALIZZAZIONE MALATTIE -->
+            <div class="tab-pane fade" id="geo-map-pane" role="tabpanel" aria-labelledby="geo-map-tab">
+                <div class="card card-custom">
+                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                        <div>
+                            <h2 class="h6 fw-bold text-primary mb-1"><i class="fa-solid fa-map-location-dot me-1"></i>Mappa Satellitare & Geolocalizzazione Malattie</h2>
+                            <p class="small text-muted mb-0">Visualizzazione aerea ad alta definizione per geolocalizzare con precisione gli attacchi sul campo.</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="captureCurrentLocationMarker()"><i class="fa-solid fa-location-crosshairs me-1"></i>Registra Posizione GPS Attuale</button>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-lg-8">
+                            <div id="fieldMap"></div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card p-3 border-0 bg-light h-100 mb-0">
+                                <h3 class="h6 fw-bold text-secondary mb-2"><i class="fa-solid fa-circle-plus me-1"></i>Aggiungi Segnalazione</h3>
+                                <div class="mb-2">
+                                    <label for="mapProbType" class="form-label small fw-bold">Tipologia Problematica</label>
+                                    <select id="mapProbType" class="form-select form-select-sm">
+                                        <option value="Dollar Spot">Dollar Spot</option>
+                                        <option value="Microdochium Patch">Microdochium Patch</option>
+                                        <option value="Brown Patch">Brown Patch</option>
+                                        <option value="Pyricularia">Pyricularia (Gray Leaf Spot)</option>
+                                        <option value="Pythium">Pythium</option>
+                                        <option value="Carenza Idrica / Dry Patch">Carenza Idrica / Dry Patch</option>
+                                        <option value="Infestanti">Infestanti</option>
+                                        <option value="Altro">Altro</option>
+                                    </select>
+                                </div>
+                                <div class="mb-2">
+                                    <label for="mapSeverity" class="form-label small fw-bold">Gravità</label>
+                                    <select id="mapSeverity" class="form-select form-select-sm">
+                                        <option value="Bassa">Bassa</option>
+                                        <option value="Media" selected>Media</option>
+                                        <option value="Alta">Alta</option>
+                                    </select>
+                                </div>
+                                <div class="row g-2 mb-2">
+                                    <div class="col-6">
+                                        <label for="mapLat" class="form-label small fw-bold">Latitudine</label>
+                                        <input type="number" id="mapLat" class="form-control form-control-sm" step="0.000001" placeholder="45.4384">
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="mapLng" class="form-label small fw-bold">Longitudine</label>
+                                        <input type="number" id="mapLng" class="form-control form-control-sm" step="0.000001" placeholder="10.9916">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="mapNotes" class="form-label small fw-bold">Note Specifiche</label>
+                                    <input type="text" id="mapNotes" class="form-control form-control-sm" placeholder="Es. Intorno alla buca 4...">
+                                </div>
+                                <button class="btn btn-success btn-sm w-100 fw-bold" onclick="saveNewMarkerFromInputs()"><i class="fa-solid fa-floppy-disk me-1"></i>Salva Marker Satellitare</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabella Segnalazioni -->
+                    <div class="card p-2 border-0 bg-light shadow-sm mb-0">
+                        <h3 class="h6 fw-bold text-secondary mb-2"><i class="fa-solid fa-list me-1"></i>Elenco Segnalazioni Registrate</h3>
+                        <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+                            <table class="table table-sm table-striped table-bordered mb-0" style="font-size: 0.75rem;" id="geoMarkersTable">
+                                <thead class="table-secondary">
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Problematica</th>
+                                        <th>Gravità</th>
+                                        <th>Coordinate (Lat, Lng)</th>
+                                        <th>Note</th>
+                                        <th class="text-center">Azioni</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="geoMarkersTableBody">
+                                    <tr><td colspan="6" class="text-center text-muted">Nessuna segnalazione inserita.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ESPORTAZIONE REPORT -->
+            <div class="tab-pane fade" id="export-pane" role="tabpanel" aria-labelledby="export-tab">
+                <div class="card card-custom">
+                    <div class="mb-3">
+                        <h2 class="h6 fw-bold text-success mb-1"><i class="fa-solid fa-file-arrow-down me-1"></i>Esportazione Dati & Report</h2>
+                        <p class="small text-muted mb-0">Genera report riassuntivi o scarica i dati del piano in formato JSON/CSV.</p>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button class="btn btn-outline-primary btn-sm" onclick="window.print()"><i class="fa-solid fa-print me-1"></i>Stampa Report Completo</button>
+                        <button class="btn btn-outline-success btn-sm" onclick="exportDataJson()"><i class="fa-solid fa-code me-1"></i>Scarica Dati (JSON)</button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="alert('Funzione di esportazione CSV attivata.')"><i class="fa-solid fa-file-csv me-1"></i>Esporta Tabella in CSV</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCADENZE & AVVISI -->
+            <div class="tab-pane fade" id="alerts-pane" role="tabpanel" aria-labelledby="alerts-tab">
+                <div class="card card-custom">
+                    <div class="mb-3">
+                        <h2 class="h6 fw-bold text-warning mb-1" style="color: var(--warning-custom) !important;"><i class="fa-solid fa-bell me-1"></i>Notifiche & Promemoria Trattamenti</h2>
+                        <p class="small text-muted mb-0">Controlla gli interventi pianificati e le scadenze imminenti.</p>
+                    </div>
+                    <div id="alertsContainer" class="list-group"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Scripts Bootstrap e Logica JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script>
+        let currentLat = 45.2415;
+        let currentLng = 11.2351;
+
+        const productCatalog = [
+            { family: "ProTurf", name: "High N", spec: "21.5.6 + 2.5CaO + 2.5MgO", n: 21, p: 5, k: 6, durationMonths: 2, durationText: "2 Mesi", pack: 25, unit: "kg", defaultPrice: 42.00, duration: 2 },
+            { family: "ProTurf", name: "Spring/Summer", spec: "15.6.15 + 2CaO + 2MgO", n: 15, p: 6, k: 15, durationMonths: 2, durationText: "2 Mesi", pack: 25, unit: "kg", defaultPrice: 40.00, duration: 2 },
+            { family: "ProTurf", name: "High K", spec: "12.5.20 + 2CaO + 2MgO", n: 12, p: 5, k: 20, durationMonths: 2, durationText: "2 Mesi", pack: 25, unit: "kg", defaultPrice: 43.00, duration: 2 },
+            { family: "ProTurf", name: "Classic", spec: "20.0.7 + 3CaO + 3MgO", n: 20, p: 0, k: 7, durationMonths: 2, durationText: "2 Mesi", pack: 25, unit: "kg", defaultPrice: 39.00, duration: 2 },
+
+            { family: "Landscaper Pro", name: "Maintenance", spec: "21.6.8 + 2MgO", n: 21, p: 6, k: 8, durationMonths: 3, durationText: "3 Mesi", pack: 25, unit: "kg", defaultPrice: 35.00, duration: 2 },
+            { family: "Landscaper Pro", name: "Stress Control", spec: "15.0.26 + 4MgO", n: 15, p: 0, k: 26, durationMonths: 3, durationText: "3 Mesi", pack: 15, unit: "kg", defaultPrice: 38.00, duration: 2 },
+            { family: "Landscaper Pro", name: "New Grass", spec: "16.26.12", n: 16, p: 26, k: 12, durationMonths: 3, durationText: "3 Mesi", pack: 15, unit: "kg", defaultPrice: 40.00, duration: 1 },
+            { family: "Landscaper Pro", name: "Full Season", spec: "27.5.5 + 2MgO", n: 27, p: 5, k: 5, durationMonths: 8, durationText: "8-9 Mesi", pack: 15, unit: "kg", defaultPrice: 45.00, duration: 3 },
+            { family: "Landscaper Pro", name: "Shade Special", spec: "11.5.5 + 8Fe", n: 11, p: 5, k: 5, durationMonths: 2, durationText: "8 Settimane", pack: 15, unit: "kg", defaultPrice: 36.00, duration: 2 },
+            { family: "Landscaper Pro", name: "Flora", spec: "15.9.11 + 3MgO", n: 15, p: 9, k: 11, durationMonths: 5, durationText: "5-6 Mesi", pack: 15, unit: "kg", defaultPrice: 42.00, duration: 5 },
+            { family: "Landscaper Pro", name: "Universtar Classic", spec: "15.5.15 + 2MgO", n: 15, p: 5, k: 15, durationMonths: 3, durationText: "3 Mesi", pack: 25, unit: "kg", defaultPrice: 42.00, duration: 2 },   
+            { family: "Landscaper Pro", name: "Universtar Balance", spec: "15.5.16", n: 15, p: 5, k: 16, durationMonths: 3, durationText: "3 Mesi", pack: 25, unit: "kg", defaultPrice: 56.00, duration: 2 },        
+            { family: "Landscaper Pro", name: "Readystar N", spec: "21.6.9 + 6.5CaO + 2MgO + 19SO3", n: 21, p: 6, k: 9, durationMonths: 1, durationText: "Pronto effetto", pack: 25, unit: "kg", defaultPrice: 41.00, duration: 2 },
+            { family: "Landscaper Pro", name: "Readystar K", spec: "10.10.16 + 6.5CaO + MgO + 19SO3", n: 10, p: 10, k: 16, durationMonths: 1, durationText: "Pronto effetto", pack: 25, unit: "kg", defaultPrice: 41.00, duration: 2 },
+
+            { family: "Sierrablen Plus", name: "Mini", spec: "38-0-0", n: 38, p: 0, k: 0, durationMonths: 3, durationText: "2-3 Mesi", pack: 25, unit: "kg", defaultPrice: 69.00, duration: 3 },
+            { family: "Sierrablen Plus", name: "Active", spec: "19-5-18 + Micro", n: 19, p: 5, k: 18, durationMonths: 3, durationText: "3 Mesi", pack: 25, unit: "kg", defaultPrice: 85.00, duration: 3 },
+            { family: "Sierrablen Plus", name: "N-Start", spec: "30-5-5", n: 30, p: 5, k: 5, durationMonths: 3, durationText: "3 Mesi", pack: 25, unit: "kg", defaultPrice: 82.00, duration: 3 },
+            { family: "Sierrablen Plus", name: "Renovator", spec: "20-20-8", n: 20, p: 20, k: 8, durationMonths: 3, durationText: "3 Mesi", pack: 25, unit: "kg", defaultPrice: 84.00, duration: 3 },
+            { family: "Sierrablen Plus", name: "Spring Starter 3M", spec: "24-5-13", n: 24, p: 5, k: 13, durationMonths: 3, durationText: "3 Mesi", pack: 25, unit: "kg", defaultPrice: 83.00, duration: 3 },
+            { family: "Sierrablen Plus", name: "Spring Starter 4-5M", spec: "24-5-8 + 2MgO", n: 24, p: 5, k: 8, durationMonths: 5, durationText: "4-5 Mesi", pack: 25, unit: "kg", defaultPrice: 85.00, duration: 5 },
+            { family: "Sierrablen Plus", name: "Stress Control", spec: "15-0-29 + 2MgO", n: 15, p: 0, k: 29, durationMonths: 3, durationText: "3 Mesi", pack: 25, unit: "kg", defaultPrice: 88.00, duration: 3 },
+            { family: "Sierrablen Plus", name: "Turf Starter Pearl®", spec: "5-28-0 + 16.5MgO", n: 5, p: 28, k: 0, durationMonths: 3, durationText: "3 Mesi", pack: 25, unit: "kg", defaultPrice: 89.00, duration: 3 },
+
+            { family: "Sportsmaster CRF", name: "High N", spec: "26.5.11", n: 26, p: 5, k: 11, durationMonths: 3, durationText: "3 Mesi", pack: 25, unit: "kg", defaultPrice: 65.00, duration: 3 },
+            { family: "Sportsmaster CRF", name: "Renovator", spec: "23.23.5", n: 23, p: 23, k: 5, durationMonths: 3, durationText: "3 Mesi", pack: 25, unit: "kg", defaultPrice: 68.00, duration: 3 },
+            { family: "Sportsmaster CRF", name: "High K", spec: "15.5.20", n: 15, p: 5, k: 20, durationMonths: 3, durationText: "3 Mesi", pack: 25, unit: "kg", defaultPrice: 62.00, duration: 3 },
+            { family: "Sportsmaster CRF", name: "Starter", spec: "19.19.5 + 2MgO", n: 19, p: 19, k: 5, durationMonths: 3, durationText: "3 Mesi", pack: 25, unit: "kg", defaultPrice: 84.00, duration: 3 },
+
+            { family: "Sportsmaster Special BBag", name: "Balance", spec: "15.5.15", n: 15, p: 5, k: 15, durationMonths: 2, durationText: "2 Mesi", pack: 500, unit: "kg", defaultPrice: 65.00, duration: 2 },
+            { family: "Sportsmaster Special BBag", name: "High K", spec: "12.5.25", n: 12, p: 5, k: 25, durationMonths: 2, durationText: "2 Mesi", pack: 500, unit: "kg", defaultPrice: 68.00, duration: 2 },
+            { family: "Sportsmaster Special BBag", name: "High N", spec: "18.0.10", n: 18, p: 0, k: 10, durationMonths: 2, durationText: "2 Mesi", pack: 500, unit: "kg", defaultPrice: 62.00, duration: 2 },
+           
+            { family: "Sportsmaster Mini", name: "High P", spec: "19.19.5", n: 19, p: 19, k: 5, durationMonths: 1, durationText: "1 Mese", pack: 25, unit: "kg", defaultPrice: 56.00, duration: 1 },
+            { family: "Sportsmaster Mini", name: "High N", spec: "20.6.10 + 2MgO", n: 20, p: 6, k: 10, durationMonths: 1, durationText: "1 Mese", pack: 25, unit: "kg", defaultPrice: 59.00, duration: 1 },
+            { family: "Sportsmaster Mini", name: "High K", spec: "13.5.20 + 2MgO", n: 13, p: 5, k: 20, durationMonths: 1, durationText: "1 Mese", pack: 25, unit: "kg", defaultPrice: 61.00, duration: 1 },
+
+            { family: "Sportsmaster WSF", name: "High N", spec: "35.0.14 + Te", n: 35, p: 0, k: 14, durationMonths: 0, durationText: "Pronto effetto", pack: 15, unit: "kg", defaultPrice: 95.00, duration: 1 },
+            { family: "Sportsmaster WSF", name: "High K", spec: "15.0.43 + Te", n: 15, p: 0, k: 43, durationMonths: 0, durationText: "Pronto effetto", pack: 15, unit: "kg", defaultPrice: 96.00, duration: 1 },
+            { family: "Sportsmaster WSF", name: "Iron", spec: "8.0.0 + 13.9 Fe + Te", n: 8, p: 0, k: 0, durationMonths: 0, durationText: "Pronto effetto", pack: 15, unit: "kg", defaultPrice: 98.00, duration: 1 },
+
+            { family: "Sportsmaster Base", name: "High N", spec: "17.0.10 + MgO", n: 17, p: 0, k: 10, durationMonths: 1, durationText: "Pronto effetto", pack: 25, unit: "kg", defaultPrice: 98.00, duration: 1 },
+            { family: "Sportsmaster Base", name: "Pre-seeder", spec: "8.12.8", n: 8, p: 12, k: 8, durationMonths: 1, durationText: "Pronto effetto", pack: 25, unit: "kg", defaultPrice: 98.00, duration: 1 },
+            { family: "Sportsmaster Base", name: "High N", spec: "22.6.6 + MgO", n: 22, p: 6, k: 6, durationMonths: 1, durationText: "Pronto effetto", pack: 25, unit: "kg", defaultPrice: 98.00, duration: 1 },
+            { family: "Sportsmaster Base", name: "Cal K Mag", spec: "0.0.14 + MgO + CaO", n: 0, p: 0, k: 14, durationMonths: 1, durationText: "Pronto effetto", pack: 25, unit: "kg", defaultPrice: 98.00, duration: 1 },            
+            
+            { family: "Gronamic", name: "High K", spec: "Organo-minerale 7.0.20 + 3MgO", n: 7, p: 0, k: 20, durationMonths: 1, durationText: "Rilascio graduale", pack: 25, unit: "kg", defaultPrice: 48.00, duration: 1 },
+            { family: "Gronamic", name: "High N", spec: "Organo-minerale 16.3.6 + 3MgO", n: 16, p: 3, k: 6, durationMonths: 1, durationText: "Rilascio graduale", pack: 25, unit: "kg", defaultPrice: 52.00, duration: 1 },
+            { family: "Gronamic", name: "Golf Mini High K", spec: "Organo-minerale 5.0.22 + 3MgO", n: 5, p: 0, k: 22, durationMonths: 1, durationText: "Rilascio graduale", pack: 25, unit: "kg", defaultPrice: 54.00, duration: 1 },
+            { family: "Gronamic", name: "Golf Mini High N", spec: "Organo-minerale 16.3.6 + MgO", n: 16, p: 3, k: 6, durationMonths: 1, durationText: "Rilascio graduale", pack: 25, unit: "kg", defaultPrice: 50.00, duration: 1 },
+
+            { family: "Sierraform", name: "Momentum", spec: "22.5.11", n: 22, p: 5, k: 11, durationMonths: 2, durationText: "8-10 Settimane", pack: 20, unit: "kg", defaultPrice: 72.00, duration: 2 },
+            { family: "Sierraform", name: "All season", spec: "18.6.18", n: 18, p: 6, k: 18, durationMonths: 2, durationText: "8-10 Settimane", pack: 20, unit: "kg", defaultPrice: 70.00, duration: 2 },
+            { family: "Sierraform", name: "Spring Starter", spec: "16.0.16", n: 16, p: 0, k: 16, durationMonths: 2, durationText: "8-10 Settimane", pack: 20, unit: "kg", defaultPrice: 68.00, duration: 2 },
+            { family: "Sierraform", name: "Stress Control", spec: "15.0.26", n: 15, p: 0, k: 26, durationMonths: 2, durationText: "8-10 Settimane", pack: 20, unit: "kg", defaultPrice: 75.00, duration: 2 },
+
+            { family: "Greenmaster Prolite", name: "NK", spec: "12.0.12", n: 12, p: 0, k: 12, durationMonths: 1, durationText: "8-10 Settimane", pack: 25, unit: "kg", defaultPrice: 75.00, duration: 1 },
+            { family: "Greenmaster Prolite", name: "Invigorator Plus", spec: "4.3.14", n: 4, p: 3, k: 14, durationMonths: 1, durationText: "8-10 Settimane", pack: 25, unit: "kg", defaultPrice: 75.00, duration: 1 },
+            { family: "Greenmaster Prolite", name: "Cold Start", spec: "11.5.5", n: 11, p: 5, k: 5, durationMonths: 1, durationText: "8-10 Settimane", pack: 25, unit: "kg", defaultPrice: 75.00, duration: 1 },
+
+            { family: "Greenmaster Liquid Advance", name: "High N", spec: "33.0.0 + 2MgO + Micro", n: 33, p: 0, k: 0, durationMonths: 0, durationText: "Pronto effetto", pack: 10, unit: "L", defaultPrice: 59.50, duration: 1 },
+            { family: "Greenmaster Liquid", name: "Effect Iron", spec: "6.3% Fe", n: 0, p: 0, k: 0, durationMonths: 0, durationText: "Pronto effetto", pack: 10, unit: "L", defaultPrice: 98.40, duration: 1 },
+            { family: "Greenmaster Liquid Advance", name: "NK", spec: "12.0.12", n: 12, p: 0, k: 12, durationMonths: 0, durationText: "Pronto effetto", pack: 10, unit: "L", defaultPrice: 90.00, duration: 1 },
+            { family: "Greenmaster Liquid Advance", name: "Cal Mag Booster", spec: "12.0.0", n: 12, p: 0, k: 0, durationMonths: 0, durationText: "Pronto effetto", pack: 10, unit: "L", defaultPrice: 92.00, duration: 1 },
+
+            { family: "Vitalnova", name: "Blade", spec: "Biostimolante Radicale", n: 0, p: 0, k: 0, durationMonths: 0, durationText: "Liquido", pack: 10, unit: "L", defaultPrice: 130.00, duration: 1 },
+            { family: "Vitalnova", name: "SilK", spec: "Silicato K", n: 0, p: 0, k: 19, durationMonths: 0, durationText: "Liquido", pack: 10, unit: "L", defaultPrice: 130.00, duration: 1 },
+            { family: "Vitalnova", name: "Stressbuster", spec: "Anti-stress Liquido", n: 9, p: 0, k: 0, durationMonths: 0, durationText: "Liquido", pack: 10, unit: "L", defaultPrice: 135.00, duration: 1 },
+
+            { family: "H2Pro", name: "TriSmart", spec: "Surfattante Tripla Azione", n: 0, p: 0, k: 0, durationMonths: 1, durationText: "Fino a 3 mesi", pack: 5, unit: "L", defaultPrice: 180.00, duration: 1 },
+            { family: "H2Pro", name: "Flowsmart", spec: "Penetrante", n: 0, p: 0, k: 0, durationMonths: 1, durationText: "Fino a 2 mesi", pack: 10, unit: "L", defaultPrice: 180.00, duration: 1 },
+            { family: "H2Pro", name: "AquaSmart", spec: "Umettante", n: 0, p: 0, k: 0, durationMonths: 1, durationText: "Fino a 2 mesi", pack: 5, unit: "L", defaultPrice: 165.00, duration: 1 }
+        ];
+
+        const pesticideCatalog = [
+            { family: "Fitofarmaci", name: "Heritage", spec: "Azoxystrobin (WG)", n: 0, p: 0, k: 0, pack: 0.250, unit: "kg", defaultPrice: 120.00, duration: 1 },
+            { family: "Fitofarmaci", name: "Instrata Elite", spec: "Fludioxonil + Difenoconazolo (SE)", n: 0, p: 0, k: 0, pack: 1, unit: "L", defaultPrice: 280.00, duration: 1 },
+            { family: "Fitofarmaci", name: "Plazma", spec: "Azoxystrobin (SE)", n: 0, p: 0, k: 0, pack: 1, unit: "L", defaultPrice: 280.00, duration: 1 },
+            { family: "Fitofarmaci", name: "Anti Pythium", spec: "Ciazofamide (SE)", n: 0, p: 0, k: 0, pack: 0.5, unit: "L", defaultPrice: 280.00, duration: 1 },
+            { family: "Fitofarmaci", name: "Dedicate", spec: "Trifloxystrobin + Tebuconazolo (SE)", n: 0, p: 0, k: 0, pack: 0.250, unit: "L", defaultPrice: 150.00, duration: 1 },
+            { family: "Fitofarmaci", name: "Acelepryn 200 SC", spec: "Chlorantraniliprole (SC)", n: 0, p: 0, k: 0, pack: 0.6, unit: "L", defaultPrice: 195.00, duration: 1 },
+            { family: "Fitofarmaci", name: "NemaTrident B", spec: "Nematodi Entomopatogeni (Gel)", n: 0, p: 0, k: 0, pack: 1, unit: "kg", defaultPrice: 140.00, duration: 1 },
+            { family: "Fitofarmaci", name: "Dicotex", spec: "Erbicida selettivo (SL)", n: 0, p: 0, k: 0, pack: 5, unit: "L", defaultPrice: 130.00, duration: 1 },
+            { family: "Fitofarmaci", name: "Overtake", spec: "Erbicida dicotiledoni (SC)", n: 0, p: 0, k: 0, pack: 1, unit: "L", defaultPrice: 165.00, duration: 1 },
+            { family: "Fitofarmaci", name: "Ready Germiplus", spec: "Pendimethalin (GR)", n: 0, p: 0, k: 0, pack: 7, unit: "kg", defaultPrice: 75.00, duration: 1 }
+        ];
+
+        const agronomicCatalog = [
+            { family: "Manutenzione", name: "Altra Operazione", spec: "Descrizione libera", n: 0, p: 0, k: 0, pack: 1, unit: "mq", defaultPrice: 0.00, duration: 1 }
+        ];
+
+        const masterProductCatalog = [...productCatalog, ...pesticideCatalog, ...agronomicCatalog];
+
+        let fertRows = [];
+
+        let quadernoRows = [];
+        let savedQuaderno = localStorage.getItem('icl_quaderno_rows');
+        if (savedQuaderno) {
+            try { quadernoRows = JSON.parse(savedQuaderno); } catch(e) { quadernoRows = []; }
+        }
+        if (quadernoRows.length === 0) {
+            quadernoRows = [
+                { date: "2026-03-02", operation: "Fungicida Instrata", operator: "Mario Rossi", notes: "Ottime condizioni, terreno umido" }
+            ];
+        }
+
+        let geoMarkers = [];
+        let savedGeoMarkers = localStorage.getItem('icl_geo_markers');
+        if (savedGeoMarkers) {
+            try { geoMarkers = JSON.parse(savedGeoMarkers); } catch(e) { geoMarkers = []; }
+        }
+
+        let mapObj = null;
+        let mapMarkersLayer = null;
+
+        let npkChartObj = null;
+        let dsChartObj = null;
+        let microdochiumChartObj = null;
+        let brownPatchChartObj = null;
+        let pyriculariaChartObj = null;
+        let gpChartObj = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("startDateGdd").value = new Date().getFullYear() + "-03-01";
+            initTimelineMatrix();
+            renderFertTable();
+            renderProductsTable();
+            renderPesticidesTable();
+            initCharts();
+            calculateCoring();
+            renderQuadernoTable();
+            renderAlerts();
+            
+            fetchWeatherData(); 
+            
+            initFieldMap();
+        });
+
+        function updateSeasonTitle(val) {
+            document.getElementById("currentSeasonLabel").innerText = "Stagione " + val;
+        }
+
+        function updateTotalArea(val) {
+            calculateCoring();
+            renderFertTable();
+            runAllCalculations();
+        }
+
+        function initTimelineMatrix() {
+            const weeksRow = document.getElementById("timelineWeeksRow");
+            const cellsRow = document.getElementById("timelineCellsRow");
+            if (!weeksRow || !cellsRow) return;
+            weeksRow.innerHTML = "";
+            cellsRow.innerHTML = "";
+
+            const monthNamesShort = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"];
+
+            for (let m = 1; m <= 12; m++) {
+                for (let w = 1; w <= 4; w++) {
+                    let th = document.createElement("th");
+                    th.className = "week-header";
+                    th.innerText = w;
+                    weeksRow.appendChild(th);
+
+                    let td = document.createElement("td");
+                    td.className = "timeline-cell";
+                    td.id = `t_cell_${m}_${w}`;
+                    
+                    let monthNameAbbr = monthNamesShort[m - 1];
+                    td.setAttribute("ondragover", "allowDrop(event)");
+                    td.setAttribute("ondragleave", "removeDropStyle(event)");
+                    td.setAttribute("ondrop", `dropProduct(event, '${monthNameAbbr}', ${w})`);
+
+                    cellsRow.appendChild(td);
+                }
+            }
+            updateTimelineVisuals();
+        }
+
+        function updateTimelineVisuals() {
+            for (let m = 1; m <= 12; m++) {
+                for (let w = 1; w <= 4; w++) {
+                    let cell = document.getElementById(`t_cell_${m}_${w}`);
+                    if (cell) cell.innerHTML = "";
+                }
+            }
+
+            fertRows.forEach((r, idx) => {
+                let parsed = parsePeriodString(r.period);
+                if (parsed) {
+                    let cell = document.getElementById(`t_cell_${parsed.m}_${parsed.w}`);
+                    if (cell) {
+                        let badge = document.createElement("span");
+                        badge.className = "timeline-badge " + getFamilyBadgeClass(r.family);
+                        badge.title = `${r.product} (${r.period}) - Trascina per spostare`;
+                        badge.innerText = r.product.substring(0, 6);
+                        
+                        badge.setAttribute("draggable", "true");
+                        badge.setAttribute("ondragstart", `drag(event, ${idx})`);
+
+                        cell.appendChild(badge);
+                    }
+                }
+            });
+            renderAlerts();
+        }
+
+        function drag(ev, rowIndex) {
+            ev.dataTransfer.setData("text/plain", rowIndex);
+        }
+
+        function allowDrop(ev) {
+            ev.preventDefault();
+            let td = ev.target.closest('td');
+            if (td) td.classList.add('drag-over');
+        }
+
+        function removeDropStyle(ev) {
+            let td = ev.target.closest('td');
+            if (td) td.classList.remove('drag-over');
+        }
+
+        function dropProduct(event, targetMonthAbbr, targetWeek) {
+            event.preventDefault();
+            let td = event.target.closest('td');
+            if (td) td.classList.remove('drag-over');
+
+            let rowIndex = event.dataTransfer.getData("text/plain");
+            if (rowIndex !== "" && !isNaN(rowIndex)) {
+                let idx = parseInt(rowIndex);
+                if (fertRows[idx]) {
+                    let monthMap = {
+                        "gen": "Gen", "feb": "Feb", "mar": "Mar", "apr": "Apr",
+                        "mag": "Mag", "giu": "Giu", "lug": "Lug", "ago": "Ago",
+                        "set": "Set", "ott": "Ott", "nov": "Nov", "dic": "Dic"
+                    };
+                    let formattedMonth = monthMap[targetMonthAbbr] || "Mar";
+                    fertRows[idx].period = `${formattedMonth} - S${targetWeek}`;
+                    
+                    renderFertTable();
+                    updateTimelineVisuals();
+                }
+            }
+        }
+
+        function parsePeriodString(str) {
+            if (!str) return null;
+            let parts = str.split("-");
+            if (parts.length < 2) return null;
+            let mStr = parts[0].trim().toLowerCase();
+            let wStr = parts[1].trim().toLowerCase();
+
+            let months = { "gen": 1, "feb": 2, "mar": 3, "apr": 4, "mag": 5, "giu": 6, "lug": 7, "ago": 8, "set": 9, "ott": 10, "nov": 11, "dic": 12 };
+            let m = 0;
+            for (let k in months) {
+                if (mStr.includes(k)) { m = months[k]; break; }
+            }
+            let w = 1;
+            if (wStr.includes("s2") || wStr.includes("2")) w = 2;
+            if (wStr.includes("s3") || wStr.includes("3")) w = 3;
+            if (wStr.includes("s4") || wStr.includes("4")) w = 4;
+
+            return m ? { m, w } : null;
+        }
+
+        function getFamilyBadgeClass(family) {
+            if (!family) return "bg-line-default";
+            let f = family.toLowerCase();
+            if (f.includes("proturf")) return "bg-line-proturf";
+            if (f.includes("landscaper")) return "bg-line-landscaper";
+            if (f.includes("sportsmaster")) return "bg-line-sportsmaster";
+            if (f.includes("gronamic")) return "bg-line-gronamic";
+            if (f.includes("sierra")) return "bg-line-sierrablen-plus";
+            if (f.includes("fitofarmaci")) return "bg-line-fitofarmaci";
+            if (f.includes("manutenzione")) return "bg-line-manutenzione";
+            return "bg-line-default";
+        }
+
+        function renderFertTable() {
+            fertRows.sort((a, b) => {
+                let pA = parsePeriodString(a.period) || { m: 99, w: 1 };
+                let pB = parsePeriodString(b.period) || { m: 99, w: 1 };
+                if (pA.m !== pB.m) return pA.m - pB.m;
+                return pA.w - pB.w;
+            });
+
+            let tbody = document.getElementById("fertTableBody");
+            if (!tbody) return;
+            tbody.innerHTML = "";
+
+            let totalN = 0, totalP = 0, totalK = 0, totalBags = 0, totalCost = 0;
+            
+            let areaInput = document.getElementById("infoSuperficie");
+            let area = (areaInput && !isNaN(parseFloat(areaInput.value))) ? parseFloat(areaInput.value) : 5000;
+            
+            let monthlyN = Array(12).fill(0);
+            let allFamilies = [...new Set(masterProductCatalog.map(p => p.family))];
+
+            fertRows.forEach((r, idx) => {
+                let prodObj = masterProductCatalog.find(p => p.family === r.family && p.name === r.product) || { n: 0, p: 0, k: 0, spec: "-", defaultPrice: 0, duration: 1, pack: 1, unit: "mq" };
+                let doseVal = parseFloat(r.dose) || 0;
+                
+                let packSize = prodObj.pack || 1;
+                let unitLabel = prodObj.unit || "mq";
+                let isPesticide = (r.family === "Fitofarmaci");
+                let isAgronomic = (r.family === "Manutenzione");
+                
+                let bags = 0;
+                let nApp = 0, pApp = 0, kApp = 0;
+
+                if (isAgronomic) {
+                    bags = 1;
+                } else if (isPesticide) {
+                    let totalUnits = (area / 10000) * doseVal;
+                    bags = Math.ceil(totalUnits / packSize);
+                } else if (unitLabel === "L") {
+                    let litriTotali = (area / 10000) * doseVal;
+                    bags = Math.ceil(litriTotali / packSize);
+                    let equivalentGPerSqM = doseVal / 100;
+                    nApp = (equivalentGPerSqM * prodObj.n) / 10;
+                    pApp = (equivalentGPerSqM * prodObj.p) / 10;
+                    kApp = (equivalentGPerSqM * prodObj.k) / 10;
+                } else {
+                    let kgTotali = (area * doseVal) / 1000;
+                    bags = Math.ceil(kgTotali / packSize);
+                    nApp = (doseVal * prodObj.n) / 10;
+                    pApp = (doseVal * prodObj.p) / 10;
+                    kApp = (doseVal * prodObj.k) / 10;
+                }
+                
+                let costPerBag = (r.cost !== "" && r.cost !== null && !isNaN(r.cost)) ? parseFloat(r.cost) : prodObj.defaultPrice;
+                let rowCost = isAgronomic ? costPerBag : (bags * costPerBag);
+
+                if (!isPesticide && !isAgronomic) {
+                    totalN += nApp;
+                    totalP += pApp;
+                    totalK += kApp;
+                }
+                totalBags += (isAgronomic ? 0 : bags);
+                totalCost += rowCost;
+
+                let parsed = parsePeriodString(r.period);
+                if (parsed && !isPesticide && !isAgronomic && prodObj.n > 0) {
+                    let startMonth = parsed.m;
+                    let durationMonths = Math.max(1, prodObj.duration || 2);
+                    let nPerMonth = nApp / durationMonths;
+                    for (let i = 0; i < durationMonths; i++) {
+                        let targetMonthIndex = (startMonth - 1 + i) % 12;
+                        monthlyN[targetMonthIndex] += nPerMonth;
+                    }
+                }
+
+                let productsInFamily = masterProductCatalog.filter(p => p.family === r.family);
+
+                let tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><input type="text" class="form-control form-control-sm" value="${r.period}" onchange="updateRow(${idx}, 'period', this.value)" style="min-width: 90px;"></td>
+                    <td>
+                        <select class="form-select form-select-sm" onchange="updateFamily(${idx}, this.value)" style="min-width: 110px;">
+                            ${allFamilies.map(f => `<option value="${f}" ${f === r.family ? 'selected' : ''}>${f}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        ${isAgronomic 
+                            ? `<input type="text" class="form-control form-control-sm" value="${r.product}" onchange="updateRow(${idx}, 'product', this.value)" placeholder="Es. Carotatura..." style="min-width: 130px;">`
+                            : `<select class="form-select form-select-sm" onchange="updateProduct(${idx}, this.value)" style="min-width: 130px;">
+                                ${productsInFamily.map(p => `<option value="${p.name}" ${p.name === r.product ? 'selected' : ''}>${p.name}</option>`).join('')}
+                               </select>`
+                        }
+                    </td>
+                    <td><small class="text-muted">${isAgronomic ? 'Lavorazione agronomica' : prodObj.spec}</small></td>
+                    <td style="text-align: center;">
+                        ${isAgronomic 
+                            ? `<span class="text-muted">-</span>` 
+                            : `<input type="number" class="form-control form-control-sm text-center" value="${r.dose}" style="width: 70px; display:inline-block;" onchange="updateRow(${idx}, 'dose', this.value)"> <small>${unitLabel}/ha</small>`
+                        }
+                    </td>
+                    <td class="${(isPesticide || isAgronomic) ? 'text-muted' : 'text-success fw-bold'}">${(isPesticide || isAgronomic) ? '-' : nApp.toFixed(1)}</td>
+                    <td class="${(isPesticide || isAgronomic) ? 'text-muted' : 'text-primary fw-bold'}">${(isPesticide || isAgronomic) ? '-' : pApp.toFixed(1)}</td>
+                    <td class="${(isPesticide || isAgronomic) ? 'text-muted' : 'text-info fw-bold'}">${(isPesticide || isAgronomic) ? '-' : kApp.toFixed(1)}</td>
+                    <td>${isAgronomic ? 'Intervento' : (bags + ' conf (' + packSize + ' ' + unitLabel + ')')}</td>
+                    <td style="text-align: center;"><input type="number" class="form-control form-control-sm text-center" value="${r.cost}" style="width: 75px; display:inline-block;" onchange="updateRow(${idx}, 'cost', this.value)"></td>
+                    <td class="text-purple fw-bold">€ ${rowCost.toFixed(2)}</td>
+                    <td class="text-center no-print"><button class="btn btn-outline-danger btn-sm py-0 px-1" onclick="removeRow(${idx})"><i class="fa-solid fa-trash"></i></button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById("sumN").innerText = totalN.toFixed(1);
+            document.getElementById("sumP").innerText = totalP.toFixed(1);
+            document.getElementById("sumK").innerText = totalK.toFixed(1);
+            document.getElementById("sumBags").innerText = totalBags;
+            document.getElementById("sumCost").innerText = "€ " + totalCost.toFixed(2);
+
+            document.getElementById("totalN").innerText = totalN.toFixed(1);
+            document.getElementById("totalP").innerText = totalP.toFixed(1);
+            document.getElementById("totalK").innerText = totalK.toFixed(1);
+            document.getElementById("totalCostHeader").innerText = "€ " + totalCost.toFixed(2);
+            document.getElementById("costPerSqM").innerText = "€ " + (area > 0 ? (totalCost / area).toFixed(2) : "0.00");
+
+            updateNPKChart(totalN, totalP, totalK);
+            updateGPChartNitrogen(monthlyN);
+        }
+
+        function addNewRow() {
+            fertRows.push({ period: "Mag - S1", family: "ProTurf", product: "High N", dose: 30, unit: "conf", cost: 42 });
+            renderFertTable();
+            updateTimelineVisuals();
+        }
+
+        function removeRow(idx) {
+            fertRows.splice(idx, 1);
+            renderFertTable();
+            updateTimelineVisuals();
+        }
+
+        function updateRow(idx, field, val) {
+            fertRows[idx][field] = val;
+            if (field === 'period') {
+                renderFertTable();
+                updateTimelineVisuals();
+            }
+            if (field === 'dose' || field === 'cost' || field === 'product') renderFertTable();
+        }
+
+        function updateFamily(idx, fam) {
+            fertRows[idx].family = fam;
+            let firstProd = masterProductCatalog.find(p => p.family === fam);
+            if (firstProd) {
+                fertRows[idx].product = firstProd.name;
+                fertRows[idx].cost = firstProd.defaultPrice;
+                fertRows[idx].dose = (fam === "Fitofarmaci") ? 1.0 : (fam === "Manutenzione" ? 0 : 30);
+            }
+            renderFertTable();
+            updateTimelineVisuals();
+        }
+
+        function updateProduct(idx, prodName) {
+            fertRows[idx].product = prodName;
+            let pObj = masterProductCatalog.find(p => p.family === fertRows[idx].family && p.name === prodName);
+            if (pObj) {
+                fertRows[idx].cost = pObj.defaultPrice;
+                fertRows[idx].dose = (fertRows[idx].family === "Fitofarmaci") ? 1.0 : 30;
+            }
+            renderFertTable();
+        }
+
+        function loadProgramLSP() {
+            fertRows = [
+                { period: "Mar - S1", family: "Landscaper Pro", product: "Maintenance", dose: 35, unit: "conf", cost: 0 },
+                { period: "Giu - S1", family: "Landscaper Pro", product: "Stress Control", dose: 30, unit: "conf", cost: 0 },
+                { period: "Set - S1", family: "Landscaper Pro", product: "Maintenance", dose: 35, unit: "conf", cost: 0 },
+                { period: "Nov - S1", family: "Landscaper Pro", product: "Stress Control", dose: 30, unit: "conf", cost: 0 }
+            ];
+            renderFertTable();
+            updateTimelineVisuals();
+        }
+
+        function loadProgramSierraBlen() {
+            fertRows = [
+                { period: "Apr - S1", family: "Sierrablen Plus", product: "Active", dose: 35, unit: "conf", cost: 0 },
+                { period: "Lug - S1", family: "Sierrablen Plus", product: "Stress Control", dose: 30, unit: "conf", cost: 0 },
+                { period: "Ott - S1", family: "Sierrablen Plus", product: "Active", dose: 35, unit: "conf", cost: 0 }
+            ];
+            renderFertTable();
+            updateTimelineVisuals();
+        }
+
+        function resetAllCosts() {
+            if (confirm("Vuoi davvero azzerare tutti i costi e svuotare la tabella?")) {
+                fertRows = [];
+                renderFertTable();
+                updateTimelineVisuals();
+            }
+        }
+
+        function resetOnlyProductCosts() {
+            fertRows.forEach(row => { row.cost = 0; });
+            renderFertTable();
+        }
+
+        function saveUserData() {
+            alert("Dati del piano e impostazioni salvati con successo!");
+        }
+
+        async function fetchWeatherData() {
+            let statusBox = document.getElementById("gpsStatusBox");
+            if (statusBox) {
+                statusBox.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-primary me-1"></i>Rilevamento posizione e dati meteo...`;
+            }
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        currentLat = position.coords.latitude;
+                        currentLng = position.coords.longitude;
+                        await getMeteoFromApi(currentLat, currentLng, `GPS: ${currentLat.toFixed(4)}, ${currentLng.toFixed(4)}`);
+                    },
+                    async (error) => {
+                        await getMeteoFromApi(45.2415, 11.2351, "Casaleone (VR) - GPS non disponibile");
+                    },
+                    { timeout: 8000 }
+                );
+            } else {
+                await getMeteoFromApi(45.2415, 11.2351, "Casaleone (VR) - Geolocalizzazione non supportata");
+            }
+        }
+
+        async function getMeteoFromApi(lat, lng, locationName) {
+            let statusBox = document.getElementById("gpsStatusBox");
+            let locNameElement = document.getElementById("locName");
+            if (locNameElement) {
+                locNameElement.innerText = locationName;
+            }
+
+            try {
+                let response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=et0_fao_evapotranspiration,precipitation_sum,temperature_2m_max,temperature_2m_min&past_days=1&forecast_days=1`);
+                let data = await response.json();
+
+                if (data && data.daily) {
+                    let et0Values = data.daily.et0_fao_evapotranspiration || [];
+                    let rainValues = data.daily.precipitation_sum || [];
+                    let tMaxValues = data.daily.temperature_2m_max || [];
+                    let tMinValues = data.daily.temperature_2m_min || [];
+
+                    let latestEt0 = et0Values[et0Values.length - 1] || 4.5;
+                    let totalRain7Days = rainValues.reduce((a, b) => a + (b || 0), 0);
+                    let latestTmax = tMaxValues[tMaxValues.length - 1] || 28.0;
+                    let latestTmin = tMinValues[tMinValues.length - 1] || 16.0;
+
+                    document.getElementById("et0Input").value = latestEt0.toFixed(1);
+                    document.getElementById("rainInput").value = totalRain7Days.toFixed(1);
+                    document.getElementById("tempMax").value = latestTmax.toFixed(1);
+                    document.getElementById("tempMin").value = latestTmin.toFixed(1);
+
+                    if (statusBox) {
+                        statusBox.innerHTML = `<i class="fa-solid fa-circle-check text-success me-1"></i>${locationName} | ET0: <strong>${latestEt0.toFixed(1)} mm/g</strong>`;
+                    }
+                    
+                    await fetchHistoricalGDD();
+                } else {
+                    throw new Error("Dati non trovati");
+                }
+            } catch (err) {
+                if (statusBox) {
+                    statusBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-warning me-1"></i>Errore meteo. Usati valori predefiniti.`;
+                }
+                runAllCalculations();
+            }
+
+            try {
+                let weatherResp = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=temperature_2m_mean,relative_humidity_2m_mean,precipitation_sum&past_days=14&forecast_days=7`);
+                let weatherData = await weatherResp.json();
+                if (weatherData && weatherData.daily) {
+                    processPathogenModels(weatherData.daily);
+                }
+            } catch (e) {
+                processPathogenModels(getMockDailyWeather());
+            }
+        }
+
+        async function fetchHistoricalGDD() {
+            let startDate = document.getElementById("startDateGdd").value;
+            let endDate = new Date().toISOString().split('T')[0];
+            let baseTemp = parseFloat(document.getElementById("baseTemp").value) || 10;
+
+            if (!startDate) return;
+
+            try {
+                let url = `https://archive-api.open-meteo.com/v1/archive?latitude=${currentLat}&longitude=${currentLng}&start_date=${startDate}&end_date=${endDate}&daily=temperature_2m_max,temperature_2m_min`;
+                let response = await fetch(url);
+                let data = await response.json();
+
+                if (data && data.daily && data.daily.temperature_2m_max) {
+                    let tMaxs = data.daily.temperature_2m_max;
+                    let tMins = data.daily.temperature_2m_min;
+                    let totalGdd = 0;
+
+                    for (let i = 0; i < tMaxs.length; i++) {
+                        let tMax = tMaxs[i];
+                        let tMin = tMins[i];
+                        if (tMax !== null && tMin !== null) {
+                            let dailyGdd = Math.max(0, ((tMax + tMin) / 2) - baseTemp);
+                            totalGdd += dailyGdd;
+                        }
+                    }
+
+                    document.getElementById("accumulatedGdd").value = Math.round(totalGdd);
+                    runAllCalculations();
+                }
+            } catch (e) {
+                runAllCalculations();
+            }
+        }
+
+        function updateDefaultET0() {
+            let season = document.getElementById("seasonSelect").value;
+            let et0Field = document.getElementById("et0Input");
+            let baseTempField = document.getElementById("baseTemp");
+
+            if (season === "summer") {
+                et0Field.value = "5.5";
+                baseTempField.value = "10";
+            } else if (season === "spring") {
+                et0Field.value = "3.0";
+                baseTempField.value = "10";
+            } else {
+                et0Field.value = "0.8";
+                baseTempField.value = "5";
+            }
+            
+            updateDefaultKcAndReintegration();
+            fetchHistoricalGDD();
+        }
+
+        function onTurfOrSeasonChange() {
+            updateDefaultKcAndReintegration();
+            runAllCalculations();
+        }
+
+        function updateDefaultKcAndReintegration() {
+            let turfType = document.getElementById("turfType").value;
+            let season = document.getElementById("seasonSelect").value;
+            let rejInput = document.getElementById("reintegratePct");
+
+            if (turfType === "c3") {
+                if (season === "summer") rejInput.value = "100";
+                else if (season === "spring") rejInput.value = "85";
+                else rejInput.value = "50";
+            } else {
+                if (season === "summer") rejInput.value = "85";
+                else if (season === "spring") rejInput.value = "75";
+                else rejInput.value = "20";
+            }
+        }
+
+        function runAllCalculations() {
+            calculateET();
+            calculateGDD();
+            calculatePrimoDosage();
+            calculateHerbicideAlert();
+        }
+
+        function calculateET() {
+            let turfType = document.getElementById("turfType").value;
+            let season = document.getElementById("seasonSelect").value;
+            let et0 = parseFloat(document.getElementById("et0Input").value) || 0;
+            let totalRain = parseFloat(document.getElementById("rainInput").value) || 0;
+            let areaInput = document.getElementById("infoSuperficie") || document.getElementById("areaInput");
+            let area = areaInput ? (parseFloat(areaInput.value) || 5000) : 5000;
+            let rejPct = parseFloat(document.getElementById("reintegratePct").value) || 100;
+            let microclimateVal = document.getElementById("microclimate").value;
+
+            let baseKc = 0.95; 
+            if (turfType === "c3") {
+                if (season === "summer") baseKc = 0.95;
+                else if (season === "spring") baseKc = 0.85;
+                else baseKc = 0.60;
+            } else {
+                if (season === "summer") baseKc = 0.70;
+                else if (season === "spring") baseKc = 0.60;
+                else baseKc = 0.15;
+            }
+
+            let microMultiplier = 1.0;
+            if (microclimateVal === "partial_shade") microMultiplier = 0.85;
+            else if (microclimateVal === "full_shade") microMultiplier = 0.70;
+
+            let finalKc = baseKc * microMultiplier;
+            let etcDaily = et0 * finalKc;
+            let effectiveDailyWater = etcDaily * (rejPct / 100);
+            let weeklyGrossWater = effectiveDailyWater * 7;
+
+            let effectiveRain = totalRain * 0.80;
+            let netWeeklyWater = Math.max(0, weeklyGrossWater - effectiveRain);
+            let totalVolumeNet = netWeeklyWater * area;
+
+            let daysPerWeek = 3;
+            if (season === "summer") {
+                daysPerWeek = (turfType === "c3") ? 3 : 2;
+            } else if (season === "spring") {
+                daysPerWeek = 2;
+            } else {
+                daysPerWeek = 1;
+            }
+            if (season === "winter" && netWeeklyWater < 3) daysPerWeek = 0;
+
+            let waterPerTurn = daysPerWeek > 0 ? (netWeeklyWater / daysPerWeek) : 0;
+
+            document.getElementById("weeklyWaterDisp").innerText = weeklyGrossWater.toFixed(1) + " mm";
+            document.getElementById("effectiveRainDisp").innerText = `Pioggia efficace detratta: -${effectiveRain.toFixed(1)} mm`;
+            document.getElementById("netWeeklyWaterDisp").innerText = netWeeklyWater.toFixed(1) + " mm";
+            document.getElementById("totalVolumeDisp").innerText = `Volume netto per ${area} mq: ${Math.round(totalVolumeNet).toLocaleString('it-IT')} litri a settimana`;
+
+            if (daysPerWeek > 0) {
+                document.getElementById("irrigationScheduleDisp").innerHTML = `<strong>${daysPerWeek} interventi</strong> a settimana (~${waterPerTurn.toFixed(1)} mm a turno)`;
+            } else {
+                document.getElementById("irrigationScheduleDisp").innerHTML = `<span class="text-muted">Nessuna irrigazione necessaria</span>`;
+            }
+        }
+
+        function calculateGDD() {
+            let tMax = parseFloat(document.getElementById("tempMax").value) || 0;
+            let tMin = parseFloat(document.getElementById("tempMin").value) || 0;
+            let baseTemp = parseFloat(document.getElementById("baseTemp").value) || 10;
+            let currentAcc = parseFloat(document.getElementById("accumulatedGdd").value) || 0;
+            let targetGdd = parseFloat(document.getElementById("targetGdd").value) || 200;
+
+            let dailyGdd = Math.max(0, ((tMax + tMin) / 2) - baseTemp);
+            let daysToTarget = dailyGdd > 0 ? Math.max(0, Math.ceil((targetGdd - currentAcc) / dailyGdd)) : "N/D";
+
+            document.getElementById("dailyGddDisp").innerHTML = `GDD giornalieri stimati: <strong>+${dailyGdd.toFixed(1)}</strong> (Accumulo totale: <strong>${currentAcc}</strong> / ${targetGdd} GDD)`;
+
+            let pgrStatusHTML = "";
+            if (currentAcc >= targetGdd) {
+                pgrStatusHTML = `<span class="text-danger fw-bold"><i class="fa-solid fa-triangle-exclamation me-1"></i>Target GDD raggiunto o superato! Riapplicare il regolatore.</span>`;
+            } else {
+                pgrStatusHTML = `<span class="text-success"><i class="fa-solid fa-circle-check me-1"></i>Mancano circa <strong>${daysToTarget} giorni</strong> stimati al target PGR.</span>`;
+            }
+            document.getElementById("pgrStatusDisp").innerHTML = pgrStatusHTML;
+        }
+
+        function calculatePrimoDosage() {
+            let turfSpecies = document.getElementById("turfSpecies").value;
+            let cutHeight = document.getElementById("cutHeight").value;
+            let intensity = document.getElementById("primoIntensity").value;
+            let areaInput = document.getElementById("infoSuperficie") || document.getElementById("areaInput");
+            let area = areaInput ? (parseFloat(areaInput.value) || 5000) : 5000;
+
+            let doseLitrePerHa = 0.4;
+
+            switch (cutHeight) {
+                case "greens":
+                    doseLitrePerHa = 0.4;
+                    break;
+                case "fairways":
+                    doseLitrePerHa = (intensity === "min") ? 0.8 : 1.6;
+                    break;
+                case "rough":
+                    doseLitrePerHa = (intensity === "min") ? 1.6 : 2.4;
+                    break;
+                case "lolium_high":
+                    doseLitrePerHa = 3.2;
+                    break;
+            }
+
+            let speciesWarning = "";
+            if ((turfSpecies === "festuca" || turfSpecies === "poa" || turfSpecies === "agrostis") && doseLitrePerHa >= 1.6) {
+                speciesWarning = `<i class="fa-solid fa-triangle-exclamation text-warning me-1"></i>Nota etichetta Syngenta: Dosi elevate su ${turfSpecies.toUpperCase()} possono causare lievi e transitorie decolorazioni/bruciature. Testare prima su piccola scala.`;
+            } else if (turfSpecies === "cynodon") {
+                speciesWarning = `<i class="fa-solid fa-circle-info text-info me-1"></i>Nota Macroterme (Cynodon): Ottima tolleranza al trinexapac-etile in piena fase di crescita estiva.`;
+            }
+
+            let mlPerSqM = doseLitrePerHa * 0.1;
+            let totalMl = mlPerSqM * area;
+
+            document.getElementById("primoRateDisp").innerHTML = `${mlPerSqM.toFixed(2)} ml / mq <span class="text-muted fw-normal" style="font-size: 0.8rem;">(${doseLitrePerHa.toFixed(1)} l/ha)</span>`;
+            document.getElementById("primoTotalVolumeDisp").innerText = `Quantità totale per ${area} mq: ${Math.round(totalMl)} ml di prodotto`;
+            document.getElementById("speciesWarningDisp").innerHTML = speciesWarning;
+        }
+
+        function calculateHerbicideAlert() {
+            let tMax = parseFloat(document.getElementById("tempMax").value) || 0;
+            let tMin = parseFloat(document.getElementById("tempMin").value) || 0;
+            let avgTemp = (tMax + tMin) / 2;
+            let weedTarget = document.getElementById("weedTarget").value;
+            let herbicideBox = document.getElementById("herbicideBox");
+            let statusDisp = document.getElementById("herbicideStatusDisp");
+            let avgTempDisp = document.getElementById("herbicideAvgTempDisp");
+
+            if (avgTempDisp) avgTempDisp.innerText = avgTemp.toFixed(1) + " °C";
+
+            let weedName = "";
+            let minGerm = 0;
+            let maxGerm = 0;
+
+            switch (weedTarget) {
+                case "digitaria": weedName = "Digitaria / Sanguinella"; minGerm = 12; maxGerm = 16; break;
+                case "eleusine": weedName = "Eleusine / Crowsfoot"; minGerm = 15; maxGerm = 20; break;
+                case "setaria": weedName = "Setaria / Panico"; minGerm = 16; maxGerm = 22; break;
+                case "portulaca": weedName = "Portulaca / Erba porcellana"; minGerm = 18; maxGerm = 22; break;
+                case "echinochloa": weedName = "Giavone"; minGerm = 16; maxGerm = 22; break;
+                case "amaranthus": weedName = "Amaranto"; minGerm = 18; maxGerm = 25; break;
+                case "poa_annua": weedName = "Poa annua"; minGerm = 14; maxGerm = 22; break;
+                case "stellaria": weedName = "Stellaria / Centocchio"; minGerm = 10; maxGerm = 18; break;
+                case "capsella": weedName = "Borsapastore"; minGerm = 10; maxGerm = 18; break;
+                case "veronica": weedName = "Veronica"; minGerm = 12; maxGerm = 18; break;
+                case "poa_trivialis": weedName = "Fienarola triviale"; minGerm = 12; maxGerm = 19; break;
+            }
+
+            if (avgTemp < minGerm - 3) {
+                herbicideBox.style.borderLeftColor = "#3b82f6";
+                statusDisp.innerHTML = `<span class="text-primary"><i class="fa-solid fa-circle-info me-1"></i>Temperatura media (${avgTemp.toFixed(1)}°C) inferiore alla soglia per <strong>${weedName}</strong>. Finestra imminente.</span>`;
+            } else if (avgTemp >= minGerm - 3 && avgTemp <= maxGerm + 2) {
+                herbicideBox.style.borderLeftColor = "#ef4444";
+                statusDisp.innerHTML = `<span class="text-danger fw-bold"><i class="fa-solid fa-triangle-exclamation me-1"></i>ALLARME ROSSO: Pieno range di germinazione per <strong>${weedName}</strong>! Applicare antigerminello.</span>`;
+            } else {
+                herbicideBox.style.borderLeftColor = "#10b981";
+                statusDisp.innerHTML = `<span class="text-success"><i class="fa-solid fa-circle-check me-1"></i>Temperatura media (${avgTemp.toFixed(1)}°C) oltre la finestra principale per <strong>${weedName}</strong>.</span>`;
+            }
+        }
+
+        function resetDefaults() {
+            document.getElementById("turfType").value = "c3";
+            document.getElementById("seasonSelect").value = "summer";
+            document.getElementById("reintegratePct").value = "100";
+            document.getElementById("microclimate").value = "full_sun";
+            document.getElementById("startDateGdd").value = new Date().getFullYear() + "-03-01";
+            document.getElementById("baseTemp").value = "10";
+            document.getElementById("turfSpecies").value = "lolium";
+            document.getElementById("cutHeight").value = "fairways";
+            document.getElementById("primoIntensity").value = "min";
+            document.getElementById("weedTarget").value = "digitaria";
+            fetchWeatherData();
+        }
+
+        function calculateCoring() {
+            let areaInput = document.getElementById("infoSuperficie") || document.getElementById("coringArea");
+            let area = areaInput ? (parseFloat(areaInput.value) || 5000) : 5000;
+            let diam = parseFloat(document.getElementById("prongDiam").value) || 12;
+            let depth = parseFloat(document.getElementById("prongDepth").value) || 7;
+            let sx = parseFloat(document.getElementById("spacingX").value) || 5;
+            let sy = parseFloat(document.getElementById("spacingY").value) || 5;
+            let density = parseFloat(document.getElementById("sandDensity").value) || 1.4;
+
+            let r = (diam / 10) / 2;
+            let holeAreaCm2 = Math.PI * Math.pow(r, 2);
+            let spacingAreaCm2 = sx * sy;
+
+            let surfaceRemPct = (holeAreaCm2 / spacingAreaCm2) * 100;
+            let depthM = depth / 100;
+            let volumeM3 = area * (surfaceRemPct / 100) * depthM;
+            let equivMm = (volumeM3 / area) * 1000;
+            let weightTons = volumeM3 * density;
+
+            document.getElementById("resSurfaceDisp").innerText = surfaceRemPct.toFixed(2) + " %";
+            document.getElementById("resVolumeM3").innerText = volumeM3.toFixed(2) + " m³";
+            document.getElementById("resVolumeMm").innerText = `Equivalente a ${equivMm.toFixed(1)} mm sul totale`;
+            document.getElementById("resWeightTons").innerText = weightTons.toFixed(2) + " tonnellate";
+        }
+
+        function renderProductsTable() {
+            let tbody = document.getElementById("productsTableBody");
+            if (!tbody) return;
+            tbody.innerHTML = productCatalog.map(p => `
+                <tr>
+                    <td><span class="badge bg-secondary">${p.family}</span></td>
+                    <td class="fw-bold">${p.name}</td>
+                    <td><small>${p.spec}</small></td>
+                    <td class="text-success fw-bold">${p.n}</td>
+                    <td class="text-primary">${p.p}</td>
+                    <td class="text-info">${p.k}</td>
+                    <td>${p.durationText}</td>
+                    <td>${p.pack} ${p.unit || 'kg'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function filterProducts() {
+            let q = document.getElementById("searchProduct").value.toLowerCase();
+            let rows = document.querySelectorAll("#productsTableBody tr");
+            rows.forEach(r => {
+                r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none";
+            });
+        }
+
+        function renderPesticidesTable() {
+            let tbody = document.getElementById("pesticidesTableBody");
+            if (!tbody) return;
+            let pesticideListSource = [
+                { category: "Fungicida", name: "Heritage", ai: "Azoxystrobin", form: "WG", target: "Microdochium, Rhizoctonia, Pythium", dose: 0.5, unit: "kg/ha", packSize: 0.250, defaultPrice: 120.00 },
+                { category: "Fungicida", name: "Instrata Elite", ai: "Fludioxonil + Difenoconazolo", form: "SE", target: "Microdochium, Dollar Spot, Anthracnose", dose: 3.0, unit: "L/ha", packSize: 1, defaultPrice: 280.00 },
+                { category: "Fungicida", name: "Plazma", ai: "Azoxystrobin", form: "SE", target: "Microdochium, Dollar Spot, Rhizoctonia", dose: 1.0, unit: "L/ha", packSize: 1, defaultPrice: 280.00 },
+                { category: "Fungicida", name: "Anti Pythium", ai: "Ciazofamide", form: "SE", target: "Pythium", dose: 3.0, unit: "L/ha", packSize: 0.5, defaultPrice: 280.00 },
+                { category: "Fungicida", name: "Dedicate", ai: "Trifloxystrobin + Tebuconazolo", form: "SE", target: "Dollar Spot, Microdochium", dose: 1, unit: "L/ha", packSize: 0.250, defaultPrice: 150.00 },
+                { category: "Insetticida", name: "Acelepryn 200 SC", ai: "Chlorantraniliprole", form: "SC", target: "Popillia japonica, Larve Coleotteri", dose: 0.6, unit: "L/ha", packSize: 0.6, defaultPrice: 195.00 },
+                { category: "Insetticida Bio", name: "NemaTrident B", ai: "Nematodi Entomopatogeni", form: "Gel", target: "Larve Coleotteri e Tipula", dose: 50, unit: "unità/ha", packSize: 1, defaultPrice: 140.00 },
+                { category: "Erbicida", name: "Dicotex", ai: "2,4-D + MCPA + MCPP-P + Dicamba", form: "SL", target: "Infestanti a foglia larga", dose: 5.0, unit: "L/ha", packSize: 5, defaultPrice: 130.00 },
+                { category: "Erbicida", name: "Overtake", ai: "Florasulam + Halauxifen-methyl", form: "SC", target: "Dicotiledoni ostinate", dose: 2.0, unit: "L/ha", packSize: 1, defaultPrice: 165.00 },
+                { category: "Erbicida", name: "Ready Germiplus", ai: "Pendimethalin", form: "GR", target: "Pre-emergenza graminacee", dose: 70.0, unit: "kg/ha", packSize: 7, defaultPrice: 75.00 }
+            ];
+            tbody.innerHTML = pesticideListSource.map(p => `
+                <tr>
+                    <td><span class="badge bg-danger">${p.category}</span></td>
+                    <td class="fw-bold">${p.name}</td>
+                    <td><code>${p.ai}</code></td>
+                    <td>${p.target}</td>
+                    <td class="fw-bold text-success">${p.dose} ${p.unit}</td>
+                </tr>
+            `).join('');
+        }
+
+        function filterPesticides() {
+            let q = document.getElementById("searchPesticide").value.toLowerCase();
+            let rows = document.querySelectorAll("#pesticidesTableBody tr");
+            rows.forEach(r => {
+                r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none";
+            });
+        }
+
+        function processPathogenModels(daily) {
+            let temps = daily.temperature_2m_mean;
+            let rhs = daily.relative_humidity_2m_mean;
+            let rains = daily.precipitation_sum || Array(temps.length).fill(0);
+            let rawDates = daily.time ? daily.time.slice(-14) : [];
+            
+            let formattedDates = rawDates.map(dateStr => {
+                let parts = dateStr.split('-');
+                if(parts.length === 3) return `${parts[2]}/${parts[1]}`;
+                return dateStr;
+            });
+
+            let last5T = temps.slice(temps.length - 7, temps.length - 2);
+            let last5Rh = rhs.slice(rhs.length - 7, rhs.length - 2);
+            let last7Rain = rains.slice(rains.length - 7);
+            
+            let avgT5 = last5T.reduce((a,b)=>a+b, 0) / last5T.length;
+            let avgRh5 = last5Rh.reduce((a,b)=>a+b, 0) / last5Rh.length;
+            let totRain7 = last7Rain.reduce((a,b)=>a+b, 0);
+
+            let dsVals = temps.map((t, i) => {
+                let rh = rhs[i];
+                let risk = (Math.max(0, 100 - Math.abs(t - 22) * 6)) * (rh / 100);
+                return Math.min(95, Math.max(5, Math.round(risk)));
+            });
+            let dsCurrent = dsVals[dsVals.length - 1];
+
+            document.getElementById("avgTemp").innerText = avgT5.toFixed(1);
+            document.getElementById("avgRh").innerText = avgRh5.toFixed(0);
+            document.getElementById("dsProbabilityVal").innerText = dsCurrent + "%";
+            document.getElementById("dsRiskBadge").innerHTML = getRiskBadgeHtml(dsCurrent, 20);
+            updateChartWithDates(dsChartObj, formattedDates, dsVals.slice(-14), "Dollar Spot (%)");
+
+            let dsNumericBody = document.getElementById("dsNumericTableBody");
+            if (dsNumericBody) {
+                dsNumericBody.innerHTML = "";
+                let sliceDates = formattedDates.slice(-14);
+                let sliceVals = dsVals.slice(-14);
+                for(let i = 0; i < sliceDates.length; i++) {
+                    let val = sliceVals[i];
+                    let badgeClass = val >= 40 ? 'bg-danger' : (val >= 20 ? 'bg-warning text-dark' : 'bg-success');
+                    let statusText = val >= 40 ? 'Alto' : (val >= 20 ? 'Moderato' : 'Basso');
+                    let tr = document.createElement("tr");
+                    tr.innerHTML = `<td>${sliceDates[i]}</td><td class="fw-bold">${val}%</td><td><span class="badge ${badgeClass}" style="font-size: 0.65rem;">${statusText}</span></td>`;
+                    dsNumericBody.appendChild(tr);
+                }
+            }
+
+            let micVals = temps.map((t, i) => {
+                let rh = rhs[i];
+                let tFactor = t <= 18 ? Math.max(0, 100 - (t - 5)*4) : Math.max(0, 50 - (t - 18)*10);
+                let risk = tFactor * (rh / 90);
+                return Math.min(98, Math.max(5, Math.round(risk)));
+            });
+            let micCurrent = micVals[micVals.length - 1];
+
+            document.getElementById("micAvgTemp").innerText = avgT5.toFixed(1);
+            document.getElementById("micAvgRh").innerText = avgRh5.toFixed(0);
+            document.getElementById("micProbabilityVal").innerText = micCurrent + "%";
+            document.getElementById("micRiskBadge").innerHTML = getRiskBadgeHtml(micCurrent, 60);
+            updateChartWithDates(microdochiumChartObj, formattedDates, micVals.slice(-14), "Microdochium (%)");
+
+            let bpVals = temps.map((t, i) => {
+                let rh = rhs[i];
+                let tFactor = t >= 18 ? Math.min(100, (t - 15) * 8) : 10;
+                let risk = tFactor * (rh / 100);
+                return Math.min(95, Math.max(5, Math.round(risk)));
+            });
+            let bpCurrent = bpVals[bpVals.length - 1];
+
+            document.getElementById("bpAvgTemp").innerText = avgT5.toFixed(1);
+            document.getElementById("bpAvgRh").innerText = avgRh5.toFixed(0);
+            document.getElementById("bpProbabilityVal").innerText = bpCurrent + "%";
+            document.getElementById("bpRiskBadge").innerHTML = getRiskBadgeHtml(bpCurrent, 55);
+            updateChartWithDates(brownPatchChartObj, formattedDates, bpVals.slice(-14), "Brown Patch (%)");
+
+            let pyVals = temps.map((t, i) => {
+                let rh = rhs[i];
+                let rain = rains[i] || 0;
+                let tempFactor = (t >= 20 && t <= 34) ? Math.max(0, 100 - Math.abs(t - 28) * 12) : 10;
+                let humidityFactor = rh / 100;
+                let rainBonus = rain > 1 ? 15 : 0;
+                let risk = (tempFactor * humidityFactor) + rainBonus;
+                return Math.min(100, Math.max(5, Math.round(risk)));
+            });
+            let pyCurrent = pyVals[pyVals.length - 1];
+
+            document.getElementById("pyAvgTemp").innerText = avgT5.toFixed(1) + " °C";
+            document.getElementById("pyAvgRh").innerText = avgRh5.toFixed(0) + " %";
+            document.getElementById("pyRainTot").innerText = totRain7.toFixed(1) + " mm";
+            document.getElementById("pyRiskIndex").innerText = pyCurrent + " / 100";
+            
+            let pyRiskBadgeContainer = document.getElementById("pyRiskBadgeContainer");
+            let pyStatusBox = document.getElementById("pyStatusBox");
+            if (pyCurrent >= 55) {
+                pyRiskBadgeContainer.innerHTML = '<span class="badge bg-danger" style="font-size: 0.7rem;">Rischio Alto (Pyricularia)</span>';
+                pyStatusBox.className = "p-2 mb-2 rounded border fw-bold text-center bg-danger text-white";
+                pyStatusBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation me-1"></i>ALLARME PYRICULARIA: Condizioni meteo GPS altamente favorevoli all'infezione (${pyCurrent}/100)!`;
+            } else if (pyCurrent >= 30) {
+                pyRiskBadgeContainer.innerHTML = '<span class="badge bg-warning text-dark" style="font-size: 0.7rem;">Rischio Moderato</span>';
+                pyStatusBox.className = "p-2 mb-2 rounded border fw-bold text-center bg-warning text-dark";
+                pyStatusBox.innerHTML = `<i class="fa-solid fa-circle-exclamation me-1"></i>Attenzione: Rischio moderato (${pyCurrent}/100) per Zoysia e Lolium. Monitorare umidità e azoto.`;
+            } else {
+                pyRiskBadgeContainer.innerHTML = '<span class="badge bg-success" style="font-size: 0.7rem;">Rischio Basso</span>';
+                pyStatusBox.className = "p-2 mb-2 rounded border fw-bold text-center bg-success text-white";
+                pyStatusBox.innerHTML = `<i class="fa-solid fa-circle-check me-1"></i>Condizioni attuali favorevoli o stabili per Pyricularia (${pyCurrent}/100).`;
+            }
+
+            updateChartWithDates(pyriculariaChartObj, formattedDates, pyVals.slice(-14), "Indice Pyricularia");
+
+            let pyNumericBody = document.getElementById("pyNumericTableBody");
+            if (pyNumericBody) {
+                pyNumericBody.innerHTML = "";
+                let sliceDates = formattedDates.slice(-14);
+                let sliceVals = pyVals.slice(-14);
+                for(let i = 0; i < sliceDates.length; i++) {
+                    let val = sliceVals[i];
+                    let badgeClass = val >= 55 ? 'bg-danger' : (val >= 30 ? 'bg-warning text-dark' : 'bg-success');
+                    let statusText = val >= 55 ? 'Alto' : (val >= 30 ? 'Moderato' : 'Basso');
+                    let tr = document.createElement("tr");
+                    tr.innerHTML = `<td>${sliceDates[i]}</td><td class="fw-bold">${val} / 100</td><td><span class="badge ${badgeClass}" style="font-size: 0.65rem;">${statusText}</span></td>`;
+                    pyNumericBody.appendChild(tr);
+                }
+            }
+
+            document.getElementById("pyLocationInfo").innerText = `Modello integrato ITM (Turf Toolbox) - Dati live geolocalizzati (Lat: ${currentLat.toFixed(2)}, Lng: ${currentLng.toFixed(2)}).`;
+        }
+
+        function getRiskBadgeHtml(val, threshold) {
+            if (val >= threshold + 20) return '<span class="badge bg-danger" style="font-size: 0.7rem;">Rischio Alto</span>';
+            if (val >= threshold) return '<span class="badge bg-warning text-dark" style="font-size: 0.7rem;">Rischio Moderato</span>';
+            return '<span class="badge bg-success" style="font-size: 0.7rem;">Rischio Basso</span>';
+        }
+
+        function renderQuadernoTable() {
+            let tbody = document.getElementById("quadernoTableBody");
+            if (!tbody) return;
+            tbody.innerHTML = "";
+            quadernoRows.forEach((r, idx) => {
+                let tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><input type="date" class="form-control form-control-sm" value="${r.date}" onchange="updateQuaderno(${idx}, 'date', this.value)"></td>
+                    <td><input type="text" class="form-control form-control-sm" value="${r.operation}" onchange="updateQuaderno(${idx}, 'operation', this.value)"></td>
+                    <td><input type="text" class="form-control form-control-sm" value="${r.operator}" onchange="updateQuaderno(${idx}, 'operator', this.value)"></td>
+                    <td><input type="text" class="form-control form-control-sm" value="${r.notes}" onchange="updateQuaderno(${idx}, 'notes', this.value)"></td>
+                    <td class="text-center"><button class="btn btn-outline-danger btn-sm py-0 px-1" onclick="removeQuadernoRow(${idx})"><i class="fa-solid fa-trash"></i></button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+            localStorage.setItem('icl_quaderno_rows', JSON.stringify(quadernoRows));
+        }
+
+        function addQuadernoRow() {
+            let today = new Date().toISOString().split('T')[0];
+            quadernoRows.push({ date: today, operation: "", operator: "", notes: "" });
+            renderQuadernoTable();
+        }
+
+        function updateQuaderno(idx, field, val) {
+            quadernoRows[idx][field] = val;
+            localStorage.setItem('icl_quaderno_rows', JSON.stringify(quadernoRows));
+        }
+
+        function removeQuadernoRow(idx) {
+            quadernoRows.splice(idx, 1);
+            renderQuadernoTable();
+        }
+
+        function initFieldMap() {
+            if (mapObj) return;
+            let defaultLat = 45.4384;
+            let defaultLng = 10.9916;
+            if (geoMarkers.length > 0) {
+                defaultLat = geoMarkers[0].lat;
+                defaultLng = geoMarkers[0].lng;
+            }
+
+            mapObj = L.map('fieldMap').setView([defaultLat, defaultLng], 17);
+
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                maxZoom: 19,
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+            }).addTo(mapObj);
+
+            mapMarkersLayer = L.layerGroup().addTo(mapObj);
+            renderGeoMarkersToMapAndTable();
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(pos => {
+                    let lat = pos.coords.latitude;
+                    let lng = pos.coords.longitude;
+                    let latInput = document.getElementById("mapLat");
+                    let lngInput = document.getElementById("mapLng");
+                    if (latInput && !latInput.value) latInput.value = lat.toFixed(6);
+                    if (lngInput && !lngInput.value) lngInput.value = lng.toFixed(6);
+                }, err => {}, { timeout: 5000 });
+            }
+        }
+
+        function captureCurrentLocationMarker() {
+            if (!navigator.geolocation) {
+                alert("Geolocalizzazione non supportata dal browser.");
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(pos => {
+                let lat = pos.coords.latitude;
+                let lng = pos.coords.longitude;
+                document.getElementById("mapLat").value = lat.toFixed(6);
+                document.getElementById("mapLng").value = lng.toFixed(6);
+                mapObj.setView([lat, lng], 18);
+                alert("Posizione GPS satellitare acquisita!");
+            }, err => {
+                alert("Impossibile rilevare la posizione GPS.");
+            }, { enableHighAccuracy: true });
+        }
+
+        function saveNewMarkerFromInputs() {
+            let probType = document.getElementById("mapProbType").value;
+            let severity = document.getElementById("mapSeverity").value;
+            let lat = parseFloat(document.getElementById("mapLat").value);
+            let lng = parseFloat(document.getElementById("mapLng").value);
+            let notes = document.getElementById("mapNotes").value || "-";
+            let today = new Date().toISOString().split('T')[0];
+
+            if (isNaN(lat) || isNaN(lng)) {
+                alert("Inserisci coordinate di latitudine e longitudine valide.");
+                return;
+            }
+
+            geoMarkers.push({ date: today, probType, severity, lat, lng, notes });
+            localStorage.setItem('icl_geo_markers', JSON.stringify(geoMarkers));
+
+            renderGeoMarkersToMapAndTable();
+            document.getElementById("mapNotes").value = "";
+            alert("Segnalazione salvata sulla mappa satellitare!");
+        }
+
+        function renderGeoMarkersToMapAndTable() {
+            if (!mapMarkersLayer) return;
+            mapMarkersLayer.clearLayers();
+
+            let tbody = document.getElementById("geoMarkersTableBody");
+            if (!tbody) return;
+            tbody.innerHTML = "";
+
+            if (geoMarkers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">Nessuna segnalazione inserita.</td></tr>`;
+                return;
+            }
+
+            geoMarkers.forEach((m, idx) => {
+                let colorHex = m.severity === 'Alta' ? '#ef4444' : (m.severity === 'Media' ? '#f59e0b' : '#10b981');
+                let customIcon = L.divIcon({
+                    className: 'custom-div-icon',
+                    html: `<div style="background-color:${colorHex}; width:16px; height:16px; border-radius:50%; border:2px solid white; box-shadow:0 0 6px rgba(0,0,0,0.8);"></div>`,
+                    iconSize: [16, 16],
+                    iconAnchor: [8, 8]
+                });
+
+                let marker = L.marker([m.lat, m.lng], { icon: customIcon });
+                marker.bindPopup(`<b>${m.probType}</b><br>Gravità: ${m.severity}<br>Note: ${m.notes}<br>Data: ${m.date}`);
+                mapMarkersLayer.addLayer(marker);
+
+                let badgeClass = m.severity === 'Alta' ? 'bg-danger' : (m.severity === 'Media' ? 'bg-warning text-dark' : 'bg-success');
+                let tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${m.date}</td>
+                    <td class="fw-bold">${m.probType}</td>
+                    <td><span class="badge ${badgeClass}">${m.severity}</span></td>
+                    <td><code>${m.lat.toFixed(4)}, ${m.lng.toFixed(4)}</code></td>
+                    <td>${m.notes}</td>
+                    <td class="text-center">
+                        <button class="btn btn-outline-primary btn-sm py-0 px-1 me-1" onclick="focusMarker(${m.lat}, ${m.lng})" title="Centra Mappa"><i class="fa-solid fa-eye"></i></button>
+                        <button class="btn btn-outline-danger btn-sm py-0 px-1" onclick="removeGeoMarker(${idx})" title="Elimina"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function focusMarker(lat, lng) {
+            if (mapObj) {
+                mapObj.setView([lat, lng], 19);
+            }
+        }
+
+        function removeGeoMarker(idx) {
+            geoMarkers.splice(idx, 1);
+            localStorage.setItem('icl_geo_markers', JSON.stringify(geoMarkers));
+            renderGeoMarkersToMapAndTable();
+        }
+
+        function renderAlerts() {
+            let container = document.getElementById("alertsContainer");
+            if (!container) return;
+            container.innerHTML = "";
+            if (fertRows.length === 0) {
+                container.innerHTML = `<div class="list-group-item text-muted small">Nessun trattamento pianificato al momento.</div>`;
+                return;
+            }
+            fertRows.forEach(r => {
+                let item = document.createElement("div");
+                item.className = "list-group-item list-group-item-action d-flex justify-content-between align-items-center";
+                item.innerHTML = `
+                    <div>
+                        <h5 class="mb-1 fw-bold text-dark" style="font-size: 0.85rem;"><i class="fa-solid fa-circle-dot text-success me-1"></i>${r.product} (${r.family})</h5>
+                        <p class="mb-0 text-muted small">Periodo programmato: <strong>${r.period}</strong> - Dose: ${r.dose}</p>
+                    </div>
+                    <span class="badge bg-primary rounded-pill" style="font-size: 0.7rem;">Pianificato</span>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function exportDataJson() {
+            let dataObj = { fertRows, quadernoRows, geoMarkers };
+            let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataObj, null, 2));
+            let downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "piano_concimazione_icl.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function initCharts() {
+            let ctxNpk = document.getElementById('npkChart').getContext('2d');
+            npkChartObj = new Chart(ctxNpk, {
+                type: 'bar',
+                data: {
+                    labels: ['Azoto (N)', 'Fosforo (P2O5)', 'Potassio (K2O)'],
+                    datasets: [{
+                        label: 'kg/ha',
+                        data: [0, 0, 0],
+                        backgroundColor: ['#10b981', '#3b82f6', '#06b6d4'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            let createLineChart = (canvasId, color) => {
+                let ctx = document.getElementById(canvasId).getContext('2d');
+                return new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Rischio %',
+                            data: [],
+                            borderColor: color,
+                            backgroundColor: color + '22',
+                            fill: true,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, max: 100 } }
+                    }
+                });
+            };
+
+            dsChartObj = createLineChart('dsChart', '#d97706');
+            microdochiumChartObj = createLineChart('microdochiumChart', '#0284c7');
+            brownPatchChartObj = createLineChart('brownPatchChart', '#b45309');
+            pyriculariaChartObj = createLineChart('pyriculariaChart', '#008542');
+
+            let ctxGp = document.getElementById('gpChart').getContext('2d');
+            gpChartObj = new Chart(ctxGp, {
+                type: 'bar',
+                data: {
+                    labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
+                    datasets: [
+                        {
+                            type: 'line',
+                            label: 'Crescita (GP %)',
+                            data: [15, 20, 45, 75, 95, 80, 50, 60, 85, 90, 50, 20],
+                            borderColor: '#10b981',
+                            backgroundColor: '#10b981',
+                            yAxisID: 'y1',
+                            tension: 0.3
+                        },
+                        {
+                            type: 'bar',
+                            label: 'Azoto Mensile (kg/ha)',
+                            data: Array(12).fill(0),
+                            backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                            yAxisID: 'y',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { type: 'linear', display: true, position: 'left', beginAtZero: true, title: { display: true, text: 'N (kg/ha)' } },
+                        y1: { type: 'linear', display: true, position: 'right', beginAtZero: true, max: 100, grid: { drawOnChartArea: false }, title: { display: true, text: 'GP %' } }
+                    }
+                }
+            });
+        }
+
+        function updateNPKChart(n, p, k) {
+            if (npkChartObj) {
+                npkChartObj.data.datasets[0].data = [n, p, k];
+                npkChartObj.update();
+            }
+        }
+
+        function updateChartWithDates(chartObj, labelsArr, dataArr, labelStr) {
+            if (chartObj) {
+                chartObj.data.labels = labelsArr;
+                chartObj.data.datasets[0].data = dataArr;
+                chartObj.data.datasets[0].label = labelStr;
+                chartObj.update();
+            }
+        }
+
+        function updateGPChartNitrogen(monthlyArray) {
+            if (gpChartObj) {
+                gpChartObj.data.datasets[1].data = monthlyArray.map(v => parseFloat(v.toFixed(1)));
+                gpChartObj.update();
+            }
+        }
+
+        function updateGPChartType(type) {
+            if (!gpChartObj) return;
+            if (type === 'c4') {
+                gpChartObj.data.datasets[0].data = [5, 10, 30, 60, 85, 100, 100, 95, 80, 45, 15, 5];
+            } else {
+                gpChartObj.data.datasets[0].data = [15, 20, 45, 75, 95, 80, 50, 60, 85, 90, 50, 20];
+            }
+            gpChartObj.update();
+        }
+    </script>
+
+    <!-- Disclaimer ICL -->
+    <footer class="text-center py-4 mt-5 text-muted small border-top bg-white">
+        <div class="container">
+            <p class="mb-2">N.B. Considerando che le circostanze d'uso possono variare e che l'uso dei prodotti in questione non avviene sotto il nostro diretto controllo, ICL non è responsabile per eventuali risultati negativi non imputabili al prodotto.</p>
+            <p class="mb-0 fw-bold"> &copy; 2026 Made by G. Defanti - Resp. Tecnico Golf ICL Italia</p>
+        </div>
+    </footer>
+</body>
+</html>
