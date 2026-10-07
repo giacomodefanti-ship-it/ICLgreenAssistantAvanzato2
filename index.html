@@ -629,7 +629,7 @@
                         <div class="d-flex align-items-center">
                             <i class="fa-solid fa-circle-info fs-5 text-success me-2" aria-hidden="true"></i>
                             <div>
-                                <p class="small text-muted mb-0">Gestisci fertilizzanti, fitofarmaci e pratiche manutentive (es. carotature con descrizione libera) per ciascun appezzamento selezionato.</p>
+                                <p class="small text-muted mb-0">Gestisci fertilizzanti, fitofarmaci e pratiche manutentive (es. carotature o chiodature con descrizione libera) per ciascun appezzamento selezionato.</p>
                             </div>
                         </div>
                     </div>
@@ -907,12 +907,12 @@
                 </div>
             </div>
 
-            <!-- CALCOLA SABBIA CAROTATURA TAB -->
+            <!-- CALCOLA SABBIA CAROTATURA/CHIODATURA TAB -->
             <div class="tab-pane fade" id="coring-pane" role="tabpanel" aria-labelledby="coring-tab">
                 <div class="card card-custom">
                     <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap">
                         <div>
-                            <h2 class="h6 fw-bold text-success mb-1"><i class="fa-solid fa-layer-group me-1" aria-hidden="true"></i>Calcolatore Sabbia Topdressing (Coring)</h2>
+                            <h2 class="h6 fw-bold text-success mb-1"><i class="fa-solid fa-layer-group me-1" aria-hidden="true"></i>Calcolatore Sabbia Topdressing (Carotatura / Chiodatura)</h2>
                             <p class="small text-muted mb-0" style="font-size: 0.75rem;">Standard Purdue Turf Science e ISTRC.</p>
                         </div>
                     </div>
@@ -920,32 +920,50 @@
                     <div class="row g-3 mb-3">
                         <div class="col-lg-6">
                             <div class="card p-2 border-0 bg-light h-100 mb-0">
-                                <h3 class="h6 fw-bold text-secondary mb-2" style="font-size: 0.85rem;"><i class="fa-solid fa-sliders me-1"></i>Parametri di Carotatura</h3>
+                                <h3 class="h6 fw-bold text-secondary mb-2" style="font-size: 0.85rem;"><i class="fa-solid fa-sliders me-1"></i>Parametri di Intervento</h3>
                                 
+                                <div class="mb-2">
+                                    <label for="coringType" class="form-label small fw-bold mb-1">Tipologia Operazione</label>
+                                    <select id="coringType" class="form-select form-select-sm" onchange="toggleCoringFields(); calculateCoring();">
+                                        <option value="coring" selected>Carotatura (Aghi cavi - estrazione terra)</option>
+                                        <option value="tine_seeding">Chiodatura (Aghi pieni / Slit tines - senza estrazione)</option>
+                                    </select>
+                                </div>
+
                                 <div class="mb-2">
                                     <label for="coringArea" class="form-label small fw-bold mb-1">Superficie da Trattare (mq)</label>
                                     <input type="number" id="coringArea" class="form-control form-control-sm" value="5000" min="1" oninput="calculateCoring()">
                                 </div>
 
-                                <div class="row g-2 mb-2">
-                                    <div class="col-6">
-                                        <label for="prongDiam" class="form-label small fw-bold mb-1">Diametro Carota (mm)</label>
-                                        <input type="number" id="prongDiam" class="form-control form-control-sm" value="12" min="1" step="0.5" oninput="calculateCoring()">
+                                <div id="coringSpecificFields">
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-6">
+                                            <label for="prongDiam" class="form-label small fw-bold mb-1">Diametro Carota (mm)</label>
+                                            <input type="number" id="prongDiam" class="form-control form-control-sm" value="12" min="1" step="0.5" oninput="calculateCoring()">
+                                        </div>
+                                        <div class="col-6">
+                                            <label for="prongDepth" class="form-label small fw-bold mb-1">Profondità (cm)</label>
+                                            <input type="number" id="prongDepth" class="form-control form-control-sm" value="7" min="1" step="0.5" oninput="calculateCoring()">
+                                        </div>
                                     </div>
-                                    <div class="col-6">
-                                        <label for="prongDepth" class="form-label small fw-bold mb-1">Profondità (cm)</label>
-                                        <input type="number" id="prongDepth" class="form-control form-control-sm" value="7" min="1" step="0.5" oninput="calculateCoring()">
+
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-6">
+                                            <label for="spacingX" class="form-label small fw-bold mb-1">Spaziatura File (cm)</label>
+                                            <input type="number" id="spacingX" class="form-control form-control-sm" value="5" min="1" oninput="calculateCoring()">
+                                        </div>
+                                        <div class="col-6">
+                                            <label for="spacingY" class="form-label small fw-bold mb-1">Spaziatura Fila (cm)</label>
+                                            <input type="number" id="spacingY" class="form-control form-control-sm" value="5" min="1" oninput="calculateCoring()">
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="row g-2 mb-2">
-                                    <div class="col-6">
-                                        <label for="spacingX" class="form-label small fw-bold mb-1">Spaziatura File (cm)</label>
-                                        <input type="number" id="spacingX" class="form-control form-control-sm" value="5" min="1" oninput="calculateCoring()">
-                                    </div>
-                                    <div class="col-6">
-                                        <label for="spacingY" class="form-label small fw-bold mb-1">Spaziatura Fila (cm)</label>
-                                        <input type="number" id="spacingY" class="form-control form-control-sm" value="5" min="1" oninput="calculateCoring()">
+                                <div id="tineSeedingSpecificFields" style="display: none;">
+                                    <div class="mb-2">
+                                        <label for="tineSandThickness" class="form-label small fw-bold mb-1">Spessore Sabbia Topdressing (mm)</label>
+                                        <input type="number" id="tineSandThickness" class="form-control form-control-sm" value="1.5" min="0.5" max="5.0" step="0.5" oninput="calculateCoring()">
+                                        <small class="text-muted" style="font-size: 0.7rem;">Consigliato per chiodatura: 1.0 - 2.0 mm (1-2 L/mq)</small>
                                     </div>
                                 </div>
 
@@ -961,7 +979,7 @@
                             <div class="card p-3 border-0 bg-white shadow-sm h-100 border-start border-4 border-success mb-0">
                                 <h3 class="h6 fw-bold text-success mb-2" style="font-size: 0.85rem;"><i class="fa-solid fa-square-poll-vertical me-1"></i>Risultati & Fabbisogno</h3>
                                 
-                                <div class="mb-2 p-2 bg-light rounded">
+                                <div class="mb-2 p-2 bg-light rounded" id="resSurfaceBox">
                                     <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.68rem;">1. Superficie Rimossa</div>
                                     <div id="resSurfaceDisp" class="fs-4 fw-bold text-primary">0.00 %</div>
                                 </div>
@@ -982,7 +1000,7 @@
 
                     <div class="p-2 summary-box mb-0" style="font-size: 0.8rem;">
                         <h4 class="h6 fw-bold mb-1" style="font-size: 0.82rem;"><i class="fa-solid fa-circle-info me-1 text-success"></i>Note tecniche (Purdue Turf Science):</h4>
-                        <p class="small text-muted mb-0" style="font-size: 0.75rem;">
+                        <p class="small text-muted mb-0" style="font-size: 0.75rem;" id="coringNoteText">
                             Superficie Impattata (%) = (Area Foro / Spaziatura) × 100. Il volume corrisponde al riempimento totale dei fori creati.
                         </p>
                     </div>
@@ -2474,29 +2492,65 @@
             fetchWeatherData();
         }
 
+        function toggleCoringFields() {
+            let type = document.getElementById("coringType").value;
+            let coringFields = document.getElementById("coringSpecificFields");
+            let tineFields = document.getElementById("tineSeedingSpecificFields");
+            let resSurfaceBox = document.getElementById("resSurfaceBox");
+
+            if (type === "tine_seeding") {
+                coringFields.style.display = "none";
+                tineFields.style.display = "block";
+                resSurfaceBox.style.display = "none";
+            } else {
+                coringFields.style.display = "block";
+                tineFields.style.display = "none";
+                resSurfaceBox.style.display = "block";
+            }
+        }
+
         function calculateCoring() {
+            let type = document.getElementById("coringType").value;
             let areaInput = document.getElementById("infoSuperficie") || document.getElementById("coringArea");
             let area = areaInput ? (parseFloat(areaInput.value) || 5000) : 5000;
-            let diam = parseFloat(document.getElementById("prongDiam").value) || 12;
-            let depth = parseFloat(document.getElementById("prongDepth").value) || 7;
-            let sx = parseFloat(document.getElementById("spacingX").value) || 5;
-            let sy = parseFloat(document.getElementById("spacingY").value) || 5;
             let density = parseFloat(document.getElementById("sandDensity").value) || 1.4;
 
-            let r = (diam / 10) / 2;
-            let holeAreaCm2 = Math.PI * Math.pow(r, 2);
-            let spacingAreaCm2 = sx * sy;
+            let volumeM3 = 0;
+            let equivMm = 0;
+            let weightTons = 0;
 
-            let surfaceRemPct = (holeAreaCm2 / spacingAreaCm2) * 100;
-            let depthM = depth / 100;
-            let volumeM3 = area * (surfaceRemPct / 100) * depthM;
-            let equivMm = (volumeM3 / area) * 1000;
-            let weightTons = volumeM3 * density;
+            if (type === "tine_seeding") {
+                let thicknessMm = parseFloat(document.getElementById("tineSandThickness").value) || 1.5;
+                equivMm = thicknessMm;
+                volumeM3 = area * (thicknessMm / 1000);
+                weightTons = volumeM3 * density;
 
-            document.getElementById("resSurfaceDisp").innerText = surfaceRemPct.toFixed(2) + " %";
-            document.getElementById("resVolumeM3").innerText = volumeM3.toFixed(2) + " m³";
-            document.getElementById("resVolumeMm").innerText = `Equivalente a ${equivMm.toFixed(1)} mm sul totale`;
-            document.getElementById("resWeightTons").innerText = weightTons.toFixed(2) + " tonnellate";
+                document.getElementById("resVolumeM3").innerText = volumeM3.toFixed(2) + " m³";
+                document.getElementById("resVolumeMm").innerText = `Spessore Topdressing: ${thicknessMm.toFixed(1)} mm`;
+                document.getElementById("resWeightTons").innerText = weightTons.toFixed(2) + " tonnellate";
+                document.getElementById("coringNoteText").innerText = "Chiodatura (Solid Tines / Slit Tines): Nessuna estrazione di carote. Il calcolo stima il fabbisogno per un topdressing superficiale leggero (1 - 2 mm) per favorire la chiusura e proteggere il colletto.";
+            } else {
+                let diam = parseFloat(document.getElementById("prongDiam").value) || 12;
+                let depth = parseFloat(document.getElementById("prongDepth").value) || 7;
+                let sx = parseFloat(document.getElementById("spacingX").value) || 5;
+                let sy = parseFloat(document.getElementById("spacingY").value) || 5;
+
+                let r = (diam / 10) / 2;
+                let holeAreaCm2 = Math.PI * Math.pow(r, 2);
+                let spacingAreaCm2 = sx * sy;
+
+                let surfaceRemPct = (holeAreaCm2 / spacingAreaCm2) * 100;
+                let depthM = depth / 100;
+                volumeM3 = area * (surfaceRemPct / 100) * depthM;
+                equivMm = (volumeM3 / area) * 1000;
+                weightTons = volumeM3 * density;
+
+                document.getElementById("resSurfaceDisp").innerText = surfaceRemPct.toFixed(2) + " %";
+                document.getElementById("resVolumeM3").innerText = volumeM3.toFixed(2) + " m³";
+                document.getElementById("resVolumeMm").innerText = `Equivalente a ${equivMm.toFixed(1)} mm sul totale`;
+                document.getElementById("resWeightTons").innerText = weightTons.toFixed(2) + " tonnellate";
+                document.getElementById("coringNoteText").innerText = "Superficie Impattata (%) = (Area Foro / Spaziatura) × 100. Il volume corrisponde al riempimento totale dei fori creati.";
+            }
         }
 
         function renderProductsTable() {
